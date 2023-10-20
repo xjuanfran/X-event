@@ -4,17 +4,20 @@ import FormComponent from '../components/FormComponent'
 const Register = () => {
 
   const fields = [
-    { type: "text", name: "name" },
-    { type: "email", name: "email" },
-    { type: "password", name: "password" },
-    { type: "password", name: "password_confirmation" },
+    { type: "text", name: "name", placeholder: "Nombre" },
+    { type: "text", name: "lastname", placeholder: "Apellido" },
+    { type: "email", name: "email", placeholder: "Correo electronico" },
+    { type: "password", name: "password", placeholder: "Contraseña" }
   ];
+
+  const buttonRegister = 'Registrarse'
 
   return (
     <FormComponent
       fields={fields}
-      onSubmit={(data) => console.log(data)}
       showPhotoInput={true}
+      showImage
+      buttonName={buttonRegister}
     />
   )
 }
