@@ -1,7 +1,7 @@
 import { PhotoCamera } from "@mui/icons-material";
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 
 const FormComponent = ({
   fields,
@@ -14,6 +14,9 @@ const FormComponent = ({
   const [img, setImg] = useState(null);
 
   const onSubmit = handleSubmit(async (values) => {
+    //when use de cloudinary API, change logic for send the image depending of the if user send a image or not, for the moment, the image is send by default
+    values.photo = defaultImage;
+
     console.log(values);
   });
 
@@ -64,7 +67,7 @@ const FormComponent = ({
                   accept="image/*"
                   type="file"
                   name="photo"
-                  {...register("photo", { required: true })}
+                  {...register("photo")}
                 />
                 <PhotoCamera />
               </IconButton>
@@ -73,17 +76,7 @@ const FormComponent = ({
 
           <div className="flex items-center justify-center mb-3">
             {showImage &&
-              (img ? (
-                <img
-                  alt="Foto de perfil"
-                  style={{
-                    borderRadius: "100%",
-                    width: "1rem",
-                    height: "1rem",
-                  }}
-                  src={url}
-                />
-              ) : (
+              (
                 <img
                   alt="Foto perfil predeterminada"
                   style={{
@@ -92,7 +85,8 @@ const FormComponent = ({
                   }}
                   src={defaultImage}
                 />
-              ))}
+              )
+              }
           </div>
 
           <Button
