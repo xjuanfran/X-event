@@ -1,12 +1,5 @@
-const API = "localhost:3000/"
+import axios from "axios"
 
-export const login = async (email, password) => {
-    await fetch(`${API}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    })
-}
+const API = "http://localhost:3000"
 
+export const registerRequest = (user) => axios.post(`${API}/user`, user)   

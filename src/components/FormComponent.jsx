@@ -1,37 +1,77 @@
-import { PhotoCamera } from "@mui/icons-material";
-import { Button, IconButton, Stack, Typography } from "@mui/material";
+import { PhotoCamera, Upload } from "@mui/icons-material";
+import { Button, IconButton, Stack, TextField, Typography, } from "@mui/material";
 import React, { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { registerRequest } from "../api/auth";
 
-const FormComponent = ({
-  fields,
-  showPhotoInput = true,
-  showImage = true,
-  buttonName,
-}) => {
+const FormComponent = ({fields,showPhotoInput = true,showImage = true,buttonName,}) => {
   const { register, handleSubmit } = useForm();
-
   const [img, setImg] = useState(null);
 
   const onSubmit = handleSubmit(async (values) => {
     //when use de cloudinary API, change logic for send the image depending of the if user send a image or not, for the moment, the image is send by default
     values.photo = defaultImage;
-
     console.log(values);
+    const response = await registerRequest(values);
+    console.log(response);
   });
-
-  //"Generate a random image for the robohash API."
-  const namesImages = [
-    "Juan",
-    "Cristian",
-    "Nicolas",
-    "Pedro",
-    "Mariana",
-    "Liss",
-    "Nicol",
-  ];
-  const randomImages = Math.floor(Math.random() * namesImages.length);
+  //Generate a random image for the user
+  const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
+
+  const input = fields.map((field, index) => (
+    <TextField
+      variant="outlined"
+      fullWidth
+      autoComplete="off"
+      label={field.placeholder}
+      key={index}
+      type={field.type}
+      sx={{
+        marginBottom: ".7rem",
+        backgroundColor: "#52525B",
+        borderRadius: "5px",
+      }}
+      InputLabelProps={{ style: { color: "white" } }}
+      inputProps={{ style: { color: "white" } }}
+      {...register(field.name, { required: true })}
+    />
+  ))
+
+  const imageUser = showPhotoInput && (
+    <Stack direction="row" alignItems="center" spacing={0}>
+      <Typography
+        sx={{ fontWeight: "medium", textAlign: "center", fontSize: 15 }}
+      >
+        Foto identificacion
+      </Typography>
+      <IconButton
+        color="inherit"
+        aria-label="upload picture"
+        component="label"
+      >
+        <input
+          hidden
+          accept="image/*"
+          type="file"
+          name="photo"
+          {...register("photo")}
+        />
+        <PhotoCamera />
+      </IconButton>
+    </Stack>
+  )
+
+  const uploadImage = showImage && (
+    <img
+      alt="Foto perfil predeterminada"
+      style={{
+        borderRadius: "100%",
+        width: "8rem",
+      }}
+      src={defaultImage}
+    />
+  )
 
   return (
     <section className="flex h-[calc(100vh)] items-center justify-center">
@@ -40,53 +80,10 @@ const FormComponent = ({
           X Event
         </span>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {fields.map((field, index) => (
-            <input
-              key={index}
-              type={field.type}
-              placeholder={field.placeholder}
-              {...register(field.name, { required: true })}
-              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-            />
-          ))}
-
-          {showPhotoInput && (
-            <Stack direction="row" alignItems="center" spacing={0}>
-              <Typography
-                sx={{ fontWeight: "medium", textAlign: "center", fontSize: 15 }}
-              >
-                Foto identificacion
-              </Typography>
-              <IconButton
-                color="inherit"
-                aria-label="upload picture"
-                component="label"
-              >
-                <input
-                  hidden
-                  accept="image/*"
-                  type="file"
-                  name="photo"
-                  {...register("photo")}
-                />
-                <PhotoCamera />
-              </IconButton>
-            </Stack>
-          )}
-
+          {input}
+          {imageUser}
           <div className="flex items-center justify-center mb-3">
-            {showImage &&
-              (
-                <img
-                  alt="Foto perfil predeterminada"
-                  style={{
-                    borderRadius: "100%",
-                    width: "8rem",
-                  }}
-                  src={defaultImage}
-                />
-              )
-              }
+            {uploadImage}
           </div>
 
           <Button
