@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { registerRequest } from "../api/auth";
 
+
 const FormComponent = ({fields,showPhotoInput = true,showImage = true,buttonName,}) => {
   const { register, handleSubmit } = useForm();
   const [img, setImg] = useState(null);
@@ -11,10 +12,27 @@ const FormComponent = ({fields,showPhotoInput = true,showImage = true,buttonName
   const onSubmit = handleSubmit(async (values) => {
     //when use de cloudinary API, change logic for send the image depending of the if user send a image or not, for the moment, the image is send by default
     values.photo = defaultImage;
-    console.log(values);
+    const formData = new FormData();
+    formData.append("file", defaultImage);
+    formData.append("upload_preset", "xqabu9la");
+    formData.append("folder", "X-event");
+    const responseClaudinary = await fetch(
+      "https://api.cloudinary.com/v1_1/dmvpidbrt/image/upload",
+      {
+        method: "POST",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: formData,
+      }
+    );
+    const data = await responseClaudinary.json();
+    console.log(data);
+
     const response = await registerRequest(values);
     console.log(response);
   });
+
   //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
@@ -34,7 +52,7 @@ const FormComponent = ({fields,showPhotoInput = true,showImage = true,buttonName
       }}
       InputLabelProps={{ style: { color: "white" } }}
       inputProps={{ style: { color: "white" } }}
-      {...register(field.name, { required: true })}
+       {...register(field.name, { required: true })}
     />
   ))
 
