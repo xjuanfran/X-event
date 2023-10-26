@@ -42,14 +42,7 @@ const FormComponent = ({
 
   const onSubmit = handleSubmit(async (values) => {
     console.log(img);
-    if(img === null){
-      values.photo = defaultImage;
-      console.log(values);
-      const response = await registerRequest(values);
-      console.log(response);
-      return;
-    }
-    if(cancelImg){
+    if(img === null || cancelImg){
       values.photo = defaultImage;
       console.log(values);
       const response = await registerRequest(values);
