@@ -49,7 +49,6 @@ const FormComponent = ({
       console.log(response);
       return;
     }
-    console.log(img);
     const formData = new FormData();
     formData.append("file", img);
     formData.append("upload_preset", "xqabu9la");
