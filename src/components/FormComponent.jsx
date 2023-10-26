@@ -1,34 +1,71 @@
 import { PhotoCamera, Upload } from "@mui/icons-material";
-import { Button, IconButton, Stack, TextField, Typography, } from "@mui/material";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import {
+  Button,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { set, useForm } from "react-hook-form";
 import { registerRequest, reqCloudinary } from "../api/auth";
 
-
-const FormComponent = ({ fields, showPhotoInput = true, showImage = true, buttonName, }) => {
+const FormComponent = ({
+  fields,
+  showPhotoInput = true,
+  showImage = true,
+  buttonName,
+}) => {
   const { register, handleSubmit } = useForm();
+  //Use for preview the image
+  const [previewImg, setPreviewImg] = useState(null);
   const [img, setImg] = useState(null);
-
-  const onSubmit = handleSubmit(async (values) => {
-    //when use de cloudinary API, change logic for send the image depending of the if user send a image or not, for the moment, the image is send by default
-    values.photo = defaultImage;
-
-    const formData = new FormData();
-    formData.append("file", defaultImage);
-    formData.append("upload_preset", "xqabu9la");
-    formData.append("folder", "X-event");
-    reqCloudinary(formData);
-
-    const data = await reqCloudinary(formData);
-    console.log(data);
-  
-    const response = await registerRequest(values);
-    console.log(response);
-  });
 
   //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
+
+  const handleChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setPreviewImg(defaultImage);
+      setImg(defaultImage);
+      return;
+    }
+    console.log("pase");
+    setPreviewImg(URL.createObjectURL(file));
+    setImg(file);
+  };
+
+  const onSubmit = handleSubmit(async (values) => {
+    console.log(img);
+    console.log(values.photo);
+    if (img === null) {
+      console.log("entre");
+      const formData = new FormData();
+      formData.append("file", defaultImage);
+      formData.append("upload_preset", "xqabu9la");
+      formData.append("folder", "X-event");
+      reqCloudinary(formData);
+
+      const data = await reqCloudinary(formData);
+      console.log(data);
+
+    } else {
+      const formData = new FormData();
+      formData.append("file", img);
+      formData.append("upload_preset", "xqabu9la");
+      formData.append("folder", "X-event");
+      reqCloudinary(formData);
+
+      const data2 = await reqCloudinary(formData);
+      console.log(data2);
+      values.photo = data2.secure_url;
+    }
+
+    const response = await registerRequest(values);
+    console.log(response);
+  });
 
   const input = fields.map((field, index) => (
     <TextField
@@ -47,7 +84,7 @@ const FormComponent = ({ fields, showPhotoInput = true, showImage = true, button
       inputProps={{ style: { color: "white" } }}
       {...register(field.name, { required: true })}
     />
-  ))
+  ));
 
   const imageUser = showPhotoInput && (
     <Stack direction="row" alignItems="center" spacing={0}>
@@ -56,33 +93,42 @@ const FormComponent = ({ fields, showPhotoInput = true, showImage = true, button
       >
         Foto identificacion
       </Typography>
-      <IconButton
-        color="inherit"
-        aria-label="upload picture"
-        component="label"
-      >
+      <IconButton color="inherit" aria-label="upload picture" component="label">
         <input
           hidden
           accept="image/*"
           type="file"
           name="photo"
           {...register("photo")}
+          onChange={handleChange}
         />
         <PhotoCamera />
       </IconButton>
     </Stack>
-  )
+  );
 
-  const uploadImage = showImage && (
-    <img
-      alt="Foto perfil predeterminada"
-      style={{
-        borderRadius: "100%",
-        width: "8rem",
-      }}
-      src={defaultImage}
-    />
-  )
+  const uploadImage =
+    showImage &&
+    (previewImg ? (
+      <img
+        alt="Foto de perfil"
+        style={{
+          height: "10rem",
+          borderRadius: "100%",
+          width: "10rem",
+        }}
+        src={previewImg}
+      />
+    ) : (
+      <img
+        alt="Foto perfil predeterminada"
+        style={{
+          borderRadius: "100%",
+          width: "8rem",
+        }}
+        src={defaultImage}
+      />
+    ));
 
   return (
     <section className="flex h-[calc(100vh)] items-center justify-center">
