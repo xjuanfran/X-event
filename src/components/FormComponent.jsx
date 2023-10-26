@@ -19,17 +19,21 @@ const FormComponent = ({
   const { register, handleSubmit } = useForm();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
+  //Use for send the image to the server
   const [img, setImg] = useState(null);
+  //
+  const [cancelImg, setCancelImg] = useState(false);
 
   //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
 
   const handleChange = (e) => {
-    const file = e.target.files[0];
+    let file = e.target.files[0];
     if (!file) {
-      setPreviewImg(defaultImage);
-      setImg(defaultImage);
+      file = defaultImage;
+      setPreviewImg(file);
+      setCancelImg(true);
       return;
     }
     console.log("pase");
@@ -39,30 +43,30 @@ const FormComponent = ({
 
   const onSubmit = handleSubmit(async (values) => {
     console.log(img);
-    console.log(values.photo);
-    if (img === null) {
-      console.log("entre");
-      const formData = new FormData();
-      formData.append("file", defaultImage);
-      formData.append("upload_preset", "xqabu9la");
-      formData.append("folder", "X-event");
-      reqCloudinary(formData);
-
-      const data = await reqCloudinary(formData);
-      console.log(data);
-
-    } else {
-      const formData = new FormData();
-      formData.append("file", img);
-      formData.append("upload_preset", "xqabu9la");
-      formData.append("folder", "X-event");
-      reqCloudinary(formData);
-
-      const data2 = await reqCloudinary(formData);
-      console.log(data2);
-      values.photo = data2.secure_url;
+    if(img === null){
+      values.photo = defaultImage;
+      console.log(values);
+      const response = await registerRequest(values);
+      console.log(response);
+      return;
     }
+    if(cancelImg){
+      values.photo = defaultImage;
+      console.log(values);
+      const response = await registerRequest(values);
+      console.log(response);
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", img);
+    formData.append("upload_preset", "xqabu9la");
+    formData.append("folder", "X-event");
+    reqCloudinary(formData);
 
+    const data = await reqCloudinary(formData);
+    const photoCloudinary = await data.data.secure_url;
+    values.photo = photoCloudinary;
+    console.log(values);
     const response = await registerRequest(values);
     console.log(response);
   });
