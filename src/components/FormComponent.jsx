@@ -21,7 +21,7 @@ const FormComponent = ({
   const [previewImg, setPreviewImg] = useState(null);
   //Use for send the image to the server
   const [img, setImg] = useState(null);
-  //
+  //Use for cancel the image and set the default image
   const [cancelImg, setCancelImg] = useState(false);
 
   //Generate a random image for the user
@@ -36,7 +36,6 @@ const FormComponent = ({
       setCancelImg(true);
       return;
     }
-    console.log("pase");
     setPreviewImg(URL.createObjectURL(file));
     setImg(file);
   };
@@ -57,6 +56,7 @@ const FormComponent = ({
       console.log(response);
       return;
     }
+    console.log(img);
     const formData = new FormData();
     formData.append("file", img);
     formData.append("upload_preset", "xqabu9la");
@@ -67,6 +67,7 @@ const FormComponent = ({
     const photoCloudinary = await data.data.secure_url;
     values.photo = photoCloudinary;
     console.log(values);
+
     const response = await registerRequest(values);
     console.log(response);
   });
