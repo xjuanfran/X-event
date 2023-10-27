@@ -30,6 +30,7 @@ const FormComponent = ({
 
   const handleChange = (e) => {
     let file = e.target.files[0];
+    //If the user cancel the image, set the default image
     if (!file) {
       file = defaultImage;
       setPreviewImg(file);
@@ -41,7 +42,7 @@ const FormComponent = ({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    console.log(img);
+    //console.log(img);
     if(img === null || cancelImg){
       values.photo = defaultImage;
       console.log(values);
@@ -53,12 +54,10 @@ const FormComponent = ({
     formData.append("file", img);
     formData.append("upload_preset", "xqabu9la");
     formData.append("folder", "X-event");
-    reqCloudinary(formData);
-
     const data = await reqCloudinary(formData);
     const photoCloudinary = await data.data.secure_url;
     values.photo = photoCloudinary;
-    console.log(values);
+    //console.log(values);
 
     const response = await registerRequest(values);
     console.log(response);
