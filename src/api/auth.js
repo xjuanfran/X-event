@@ -2,8 +2,10 @@ import axios from "axios"
 
 const API = "http://localhost:3000"
 const APICLOUDINARY = "https://api.cloudinary.com/v1_1/dmvpidbrt/image/upload"
+const APICLOUDINARYDELETE = "https://api.cloudinary.com/v1_1/dmvpidbrt/image/destroy"
 
 export const registerRequest = (user) => axios.post(`${API}/user`, user)   
 
 // Request to Cloudinary
 export const reqCloudinary= (FormData) => axios.post(`${APICLOUDINARY}`, FormData)
+export const deleteCloudinary = (urlPhoto) => axios.delete(`${APICLOUDINARYDELETE}`, urlPhoto)

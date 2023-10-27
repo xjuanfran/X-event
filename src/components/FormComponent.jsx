@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { set, useForm } from "react-hook-form";
-import { registerRequest, reqCloudinary } from "../api/auth";
+
 
 const FormComponent = ({
   fields,
@@ -42,25 +42,7 @@ const FormComponent = ({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    //console.log(img);
-    if(img === null || cancelImg){
-      values.photo = defaultImage;
-      console.log(values);
-      const response = await registerRequest(values);
-      console.log(response);
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", img);
-    formData.append("upload_preset", "xqabu9la");
-    formData.append("folder", "X-event");
-    const data = await reqCloudinary(formData);
-    const photoCloudinary = await data.data.secure_url;
-    values.photo = photoCloudinary;
-    //console.log(values);
-
-    const response = await registerRequest(values);
-    console.log(response);
+   
   });
 
   const input = fields.map((field, index) => (
