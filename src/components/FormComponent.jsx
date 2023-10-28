@@ -1,4 +1,4 @@
-import { PhotoCamera, Upload } from "@mui/icons-material";
+import { PhotoCamera } from "@mui/icons-material";
 import {
   Button,
   IconButton,
@@ -7,8 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
-
+import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext"
+import { useNavigate } from "react-router-dom";
 
 const FormComponent = ({
   fields,
@@ -17,6 +18,8 @@ const FormComponent = ({
   buttonName,
 }) => {
   const { register, handleSubmit } = useForm();
+  const { signUp, isRegister } = useAuth();
+  const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
   //Use for send the image to the server
@@ -24,16 +27,19 @@ const FormComponent = ({
   //Use for cancel the image and set the default image
   const [cancelImg, setCancelImg] = useState(false);
 
-  //Generate a random image for the user
+  //Generate a random image for the user 
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
+
+  useEffect(() => {
+    if (isRegister) navigate("/");
+  }, [isRegister]);
 
   const handleChange = (e) => {
     let file = e.target.files[0];
     //If the user cancel the image, set the default image
     if (!file) {
-      file = defaultImage;
-      setPreviewImg(file);
+      setPreviewImg("https://robohash.org/cancel");
       setCancelImg(true);
       return;
     }
@@ -42,7 +48,7 @@ const FormComponent = ({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-   
+    signUp(values, img, defaultImage, cancelImg);
   });
 
   const input = fields.map((field, index) => (
@@ -108,6 +114,18 @@ const FormComponent = ({
       />
     ));
 
+  const buttonForm = (
+    <Button
+      variant="contained"
+      type="submit"
+      style={{
+        width: "100%",
+      }}
+    >
+      {buttonName}
+    </Button>
+  );
+
   return (
     <section className="flex h-[calc(100vh)] items-center justify-center">
       <div className="bg-zinc-800 max-w-md p-10 rounded-md">
@@ -120,15 +138,7 @@ const FormComponent = ({
           <div className="flex items-center justify-center mb-3">
             {uploadImage}
           </div>
-          <Button
-            variant="contained"
-            type="submit"
-            style={{
-              width: "100%",
-            }}
-          >
-            {buttonName}
-          </Button>
+          {buttonForm}
         </form>
       </div>
     </section>
