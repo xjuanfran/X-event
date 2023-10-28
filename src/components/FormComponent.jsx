@@ -10,6 +10,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext"
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FormComponent = ({
   fields,
@@ -17,7 +19,7 @@ const FormComponent = ({
   showImage = true,
   buttonName,
 }) => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { signUp, isRegister } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
@@ -114,6 +116,13 @@ const FormComponent = ({
       />
     ));
 
+  const handleButton = () => {
+    const dictionary = Object.entries(errors);
+    if (dictionary.length > 0) {
+      toast.error("Por favor, rellene todos los campos");
+    }
+  }
+
   const buttonForm = (
     <Button
       variant="contained"
@@ -121,6 +130,7 @@ const FormComponent = ({
       style={{
         width: "100%",
       }}
+      onClick={handleButton}
     >
       {buttonName}
     </Button>
@@ -141,6 +151,7 @@ const FormComponent = ({
           {buttonForm}
         </form>
       </div>
+      <ToastContainer />
     </section>
   );
 };
