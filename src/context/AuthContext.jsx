@@ -14,6 +14,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isRegister, setIsRegister] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const signUp = async (user, img, defaultImage, cancelImg) => {
     try {
@@ -46,7 +47,9 @@ export const AuthProvider = ({ children }) => {
       if (response) setIsRegister(true);
 
     } catch (error) {
-      console.log(error);
+      //console.log(error);
+      console.log(error.response.data.message);
+      setErrors(error);
     }
   };
 
@@ -54,5 +57,6 @@ export const AuthProvider = ({ children }) => {
     signUp,
     user,
     isRegister,
+    errors
   }}>{children}</AuthContext.Provider>;
 };

@@ -20,7 +20,7 @@ const FormComponent = ({
   buttonName,
 }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signUp, isRegister } = useAuth();
+  const { signUp, isRegister, errors: registerErrors } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
@@ -120,6 +120,9 @@ const FormComponent = ({
     const dictionary = Object.entries(errors);
     if (dictionary.length > 0) {
       toast.error("Por favor, rellene todos los campos");
+    }
+    if (errors) {
+      toast.error("Error en la bd");
     }
   }
 
