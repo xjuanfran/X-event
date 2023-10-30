@@ -7,8 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext"
+import { set, useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +19,11 @@ const FormComponent = ({
   showImage = true,
   buttonName,
 }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { signUp, isRegister, errors: registerErrors } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
@@ -29,13 +33,33 @@ const FormComponent = ({
   //Use for cancel the image and set the default image
   const [cancelImg, setCancelImg] = useState(false);
 
-  //Generate a random image for the user 
+  //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
 
   useEffect(() => {
     if (isRegister) navigate("/");
   }, [isRegister]);
+
+  useEffect(() => {
+    const errorPassword = '"password" length must be at least 6 characters long';
+    const errorNick = '"nickName" length must be at least 3 characters long';
+    const multiError = errorPassword + ". " + errorNick;
+    const errorsDb = {
+      "Validation error": "Por favor intente con otro correo",
+    };
+  
+    // Usar las variables como claves del objeto
+    errorsDb[errorPassword] = "La contraseña debe tener al menos 6 caracteres";
+    errorsDb[errorNick] = "El nombre debe tener al menos 3 caracteres";
+    errorsDb[multiError] = "El nombre debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
+  
+    if (registerErrors) {
+      console.log(registerErrors);
+      toast.error(errorsDb[registerErrors]);
+    }
+  }, [registerErrors]);
+  
 
   const handleChange = (e) => {
     let file = e.target.files[0];
@@ -121,10 +145,7 @@ const FormComponent = ({
     if (dictionary.length > 0) {
       toast.error("Por favor, rellene todos los campos");
     }
-    if (errors) {
-      toast.error("Error en la bd");
-    }
-  }
+  };
 
   const buttonForm = (
     <Button
