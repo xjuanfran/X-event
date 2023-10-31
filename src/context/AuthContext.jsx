@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isRegister, setIsRegister] = useState(false);
   const [errors, setErrors] = useState(null);
+  const [isSendForm, setIsSendForm] = useState(false);
 
   const signUp = async (user, img, defaultImage, cancelImg) => {
     try {
@@ -22,16 +23,22 @@ export const AuthProvider = ({ children }) => {
       if (img === null) {
         user.photo = defaultImage;
         const response = await registerRequest(user);
-        console.log(response);
-        if (response) setIsRegister(true);
+        //console.log(response);
+        if (response) {
+          setIsRegister(true);
+          setIsSendForm(true);
+        }
         return;
       }
       //If the user cancel the image, set the default image
       if (cancelImg) {
         user.photo = "https://robohash.org/cancel";
-        console.log(user);
+        //console.log(user);
         const response = await registerRequest(user);
-        if (response) setIsRegister(true);
+        if (response){
+          setIsRegister(true);
+          setIsSendForm(true);
+        } 
         return;
       }
       const formData = new FormData();
@@ -44,7 +51,10 @@ export const AuthProvider = ({ children }) => {
 
       const response = await registerRequest(user);
       setUser(response);
-      if (response) setIsRegister(true);
+      if (response){
+        setIsRegister(true);
+        setIsSendForm(true);
+      }
 
     } catch (error) {
       //console.log(error);
@@ -57,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     signUp,
     user,
     isRegister,
-    errors
+    errors,
+    isSendForm,
   }}>{children}</AuthContext.Provider>;
 };

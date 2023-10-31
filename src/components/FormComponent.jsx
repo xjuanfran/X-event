@@ -24,7 +24,7 @@ const FormComponent = ({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signUp, isRegister, errors: registerErrors } = useAuth();
+  const { signUp, isRegister, errors: registerErrors, isSendForm } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
@@ -38,24 +38,41 @@ const FormComponent = ({
   const defaultImage = `https://robohash.org/${randomImages}`;
 
   useEffect(() => {
-    if (isRegister) navigate("/");
+    if (isRegister){
+      if (isSendForm){
+        toast.success("Registro exitoso");
+      }
+        setTimeout(() => {
+          navigate("/");
+      } , 4000);
+    } 
   }, [isRegister]);
 
   useEffect(() => {
+
+    //Use this for translate the errors from the server
     const errorPassword = '"password" length must be at least 6 characters long';
     const errorNick = '"nickName" length must be at least 3 characters long';
+    const errorEmail = '"email" must be a valid email';
     const multiError = errorPassword + ". " + errorNick;
+    const multiError2 = errorEmail + ". " +  errorNick ;
+    const multiError3 = errorEmail + ". " +  errorPassword ;
+    const multiError4 = errorEmail + ". " +  errorPassword + ". " + errorNick;
     const errorsDb = {
       "Validation error": "Por favor intente con otro correo",
     };
   
-    // Usar las variables como claves del objeto
+    //Add the errors to the object, combination of the errors
     errorsDb[errorPassword] = "La contraseña debe tener al menos 6 caracteres";
     errorsDb[errorNick] = "El nombre debe tener al menos 3 caracteres";
-    errorsDb[multiError] = "El nombre debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[multiError] = "El nombre de usuario debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[errorEmail] = "El correo debe ser valido";
+    errorsDb[multiError2] = "El correo debe ser valido y el nick debe tener al menos 3 caracteres";
+    errorsDb[multiError3] = "El correo debe ser valido y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[multiError4] = "El nick debe tener al menos 3 caracteres, el correo debe ser valido y la contraseña debe tener al menos 6 caracteres.";
   
     if (registerErrors) {
-      console.log(registerErrors);
+      //console.log(registerErrors);
       toast.error(errorsDb[registerErrors]);
     }
   }, [registerErrors]);
@@ -161,7 +178,7 @@ const FormComponent = ({
   );
 
   return (
-    <section className="flex h-[calc(100vh)] items-center justify-center">
+    <section className="flex h-[calc(120vh)] items-center justify-center">
       <div className="bg-zinc-800 max-w-md p-10 rounded-md">
         <span className="text-3xl flex items-center justify-center mb-3">
           X Event
@@ -175,7 +192,7 @@ const FormComponent = ({
           {buttonForm}
         </form>
       </div>
-      <ToastContainer />
+      <ToastContainer  autoClose={isSendForm ? 3000 : 3500} closeButton={false}/>
     </section>
   );
 };
