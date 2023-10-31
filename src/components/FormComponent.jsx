@@ -155,7 +155,9 @@ const FormComponent = ({
           </IconButton>
         </InputAdornment>
       }
-      label="password"
+      label="Contraseña"
+      {...register("password", { required: true })}
+
     />
   </FormControl>
   )
