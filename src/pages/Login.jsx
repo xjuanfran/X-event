@@ -4,7 +4,6 @@ const Login = () => {
 
   const fields = [
     { type: "email", name: "email", placeholder: "Correo electronico" },
-    { type: "password", name: "password", placeholder: "Contraseña" }
   ];
 
   const buttonLogin = 'Iniciar sesion'
@@ -12,6 +11,7 @@ const Login = () => {
   return (
     <FormComponent
       fields={fields}
+      showInputPass={true}
       showPhotoInput={false}
       showImage={false}
       buttonName={buttonLogin}

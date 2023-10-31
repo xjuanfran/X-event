@@ -1,7 +1,11 @@
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
+  FormControl,
   IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
   Stack,
   TextField,
   Typography,
@@ -15,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const FormComponent = ({
   fields,
+  showInputPass = false,
   showPhotoInput = true,
   showImage = true,
   buttonName,
@@ -32,10 +37,18 @@ const FormComponent = ({
   const [img, setImg] = useState(null);
   //Use for cancel the image and set the default image
   const [cancelImg, setCancelImg] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   useEffect(() => {
     if (isRegister){
@@ -93,6 +106,7 @@ const FormComponent = ({
   const onSubmit = handleSubmit(async (values) => {
     console.log(window.location.pathname)
     const path = window.location.pathname;
+    console.log(values)
     if(path === "/register") signUp(values, img, defaultImage, cancelImg);
     if(path === "/login") signIn(values);
 
@@ -116,6 +130,35 @@ const FormComponent = ({
       {...register(field.name, { required: true })}
     />
   ));
+
+  const inputPassword = (
+    <FormControl
+    variant="outlined">
+    <InputLabel
+      htmlFor="outlined-adornment-password">Contraseña
+    </InputLabel>
+    <OutlinedInput
+      name='password'
+      id="outlined-adornment-password"
+      type={showPassword ? 'text' : 'password'}
+      endAdornment={
+        <InputAdornment
+          position="end"
+        >
+          <IconButton
+            aria-label="toggle password visibility"
+            onClick={handleClickShowPassword}
+            onMouseDown={handleMouseDownPassword}
+            edge="end"
+          >
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </InputAdornment>
+      }
+      label="password"
+    />
+  </FormControl>
+  )
 
   const imageUser = showPhotoInput && (
     <Stack direction="row" alignItems="center" spacing={0}>
@@ -189,6 +232,7 @@ const FormComponent = ({
         </span>
         <form onSubmit={handleSubmit(onSubmit)}>
           {input}
+          {inputPassword}
           {imageUser}
           <div className="flex items-center justify-center mb-3">
             {uploadImage}
