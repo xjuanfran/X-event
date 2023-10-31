@@ -63,6 +63,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signIn = async (user) => {
+  };
+
   return <AuthContext.Provider value={{
     signUp,
     user,

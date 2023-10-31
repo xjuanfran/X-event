@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -91,7 +91,11 @@ const FormComponent = ({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    signUp(values, img, defaultImage, cancelImg);
+    console.log(window.location.pathname)
+    const path = window.location.pathname;
+    if(path === "/register") signUp(values, img, defaultImage, cancelImg);
+    if(path === "/login") console.log(values);
+
   });
 
   const input = fields.map((field, index) => (
@@ -178,7 +182,7 @@ const FormComponent = ({
   );
 
   return (
-    <section className="flex h-[calc(120vh)] items-center justify-center">
+    <section className="flex h-[calc(100vh)] items-center justify-center">
       <div className="bg-zinc-800 max-w-md p-10 rounded-md">
         <span className="text-3xl flex items-center justify-center mb-3">
           X Event
