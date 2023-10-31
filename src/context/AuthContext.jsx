@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from "react";
-import { registerRequest, reqCloudinary } from "../api/auth";
+import { registerRequest, loginRequest, reqCloudinary } from "../api/auth";
 
 export const AuthContext = createContext();
 
@@ -64,13 +64,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signIn = async (user) => {
+    try {
+      const response = await loginRequest(user);
+      console.log(response);    
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return <AuthContext.Provider value={{
     signUp,
+    signIn,
     user,
     isRegister,
     errors,
-    isSendForm,
+    isSendForm
   }}>{children}</AuthContext.Provider>;
 };

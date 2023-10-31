@@ -24,7 +24,7 @@ const FormComponent = ({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signUp, isRegister, errors: registerErrors, isSendForm } = useAuth();
+  const { signUp, signIn, isRegister, errors: registerErrors, isSendForm } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
@@ -94,7 +94,7 @@ const FormComponent = ({
     console.log(window.location.pathname)
     const path = window.location.pathname;
     if(path === "/register") signUp(values, img, defaultImage, cancelImg);
-    if(path === "/login") console.log(values);
+    if(path === "/login") signIn(values);
 
   });
 
