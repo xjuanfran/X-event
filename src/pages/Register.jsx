@@ -8,7 +8,6 @@ const Register = () => {
     { type: "text", name: "lastName", placeholder: "Apellido" },
     { type: "text", name: "nickName", placeholder: "Nombre de usuario" },
     { type: "email", name: "email", placeholder: "Correo electronico" },
-    { type: "password", name: "password", placeholder: "Contraseña" }
   ];
 
   const buttonRegister = 'Registrarse'
@@ -16,6 +15,7 @@ const Register = () => {
   return (
     <FormComponent
       fields={fields}
+      style={"form"}
       showPhotoInput={true}
       showImage
       buttonName={buttonRegister}

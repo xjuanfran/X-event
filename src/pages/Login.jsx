@@ -11,7 +11,6 @@ const Login = () => {
   return (
     <FormComponent
       fields={fields}
-      showInputPass={true}
       showPhotoInput={false}
       showImage={false}
       buttonName={buttonLogin}

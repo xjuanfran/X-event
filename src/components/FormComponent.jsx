@@ -1,34 +1,15 @@
 import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../style/formComponent.css";
 
-const FormComponent = ({
-  fields,
-  showInputPass = false,
-  showPhotoInput = true,
-  showImage = true,
-  buttonName,
-}) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName }) => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { signUp, signIn, isRegister, errors: registerErrors, isSendForm } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
@@ -38,7 +19,8 @@ const FormComponent = ({
   //Use for cancel the image and set the default image
   const [cancelImg, setCancelImg] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  //Hook to manage the loading state
+  const [loading, setLoading] = useState(false);
 
   //Generate a random image for the user
   const randomImages = Math.random();
@@ -51,14 +33,14 @@ const FormComponent = ({
   };
 
   useEffect(() => {
-    if (isRegister){
-      if (isSendForm){
+    if (isRegister) {
+      if (isSendForm) {
         toast.success("Registro exitoso");
       }
-        setTimeout(() => {
-          navigate("/");
-      } , 4000);
-    } 
+      setTimeout(() => {
+        navigate("/");
+      }, 4000);
+    }
   }, [isRegister]);
 
   useEffect(() => {
@@ -68,13 +50,13 @@ const FormComponent = ({
     const errorNick = '"nickName" length must be at least 3 characters long';
     const errorEmail = '"email" must be a valid email';
     const multiError = errorPassword + ". " + errorNick;
-    const multiError2 = errorEmail + ". " +  errorNick ;
-    const multiError3 = errorEmail + ". " +  errorPassword ;
-    const multiError4 = errorEmail + ". " +  errorPassword + ". " + errorNick;
+    const multiError2 = errorEmail + ". " + errorNick;
+    const multiError3 = errorEmail + ". " + errorPassword;
+    const multiError4 = errorEmail + ". " + errorPassword + ". " + errorNick;
     const errorsDb = {
       "Validation error": "Por favor intente con otro correo",
     };
-  
+
     //Add the errors to the object, combination of the errors
     errorsDb[errorPassword] = "La contraseña debe tener al menos 6 caracteres";
     errorsDb[errorNick] = "El nombre debe tener al menos 3 caracteres";
@@ -83,34 +65,41 @@ const FormComponent = ({
     errorsDb[multiError2] = "El correo debe ser valido y el nick debe tener al menos 3 caracteres";
     errorsDb[multiError3] = "El correo debe ser valido y la contraseña debe tener al menos 6 caracteres";
     errorsDb[multiError4] = "El nick debe tener al menos 3 caracteres, el correo debe ser valido y la contraseña debe tener al menos 6 caracteres.";
-  
+
     if (registerErrors) {
       //console.log(registerErrors);
       toast.error(errorsDb[registerErrors]);
     }
   }, [registerErrors]);
-  
+
 
   const handleChange = (e) => {
     let file = e.target.files[0];
     //If the user cancel the image, set the default image
     if (!file) {
-      setPreviewImg("https://robohash.org/cancel");
+      console.log("cancel image");
+      console.log(file);
+      setPreviewImg(e.target.value);
       setCancelImg(true);
       return;
+    } else {
+      console.log("Choice the image");
+      setCancelImg(false);
+      setPreviewImg(file);
     }
     setPreviewImg(URL.createObjectURL(file));
     setImg(file);
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    console.log(window.location.pathname)
+    console.log(values);
+    setLoading(true);
     const path = window.location.pathname;
-    console.log(values)
-    if(path === "/register") signUp(values, img, defaultImage, cancelImg);
-    if(path === "/login") signIn(values);
-
+      if (path === "/register") await signUp(values, img, defaultImage, cancelImg);
+      if (path === "/login") await signIn(values);
+    setLoading(false);
   });
+
 
   const input = fields.map((field, index) => (
     <TextField
@@ -132,34 +121,34 @@ const FormComponent = ({
   ));
 
   const inputPassword = (
-    <FormControl
-    variant="outlined">
-    <InputLabel
-      htmlFor="outlined-adornment-password">Contraseña
-    </InputLabel>
-    <OutlinedInput
-      name='password'
-      id="outlined-adornment-password"
-      type={showPassword ? 'text' : 'password'}
-      endAdornment={
-        <InputAdornment
-          position="end"
-        >
-          <IconButton
-            aria-label="toggle password visibility"
-            onClick={handleClickShowPassword}
-            onMouseDown={handleMouseDownPassword}
-            edge="end"
-          >
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-        </InputAdornment>
-      }
-      label="Contraseña"
-      {...register("password", { required: true })}
-
-    />
-  </FormControl>
+    <FormControl fullWidth variant="outlined">
+      <InputLabel
+        style={{ color: "white" }}
+        htmlFor="outlined-adornment-password">Contraseña
+      </InputLabel>
+      <OutlinedInput
+        name='password'
+        id="outlined-adornment-password"
+        inputProps={{ style: { color: "white" } }}
+        type={showPassword ? 'text' : 'password'}
+        sx={{ marginBottom: ".7rem", backgroundColor: "#52525B", borderRadius: "5px" }}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={handleClickShowPassword}
+              onMouseDown={handleMouseDownPassword}
+              edge="end"
+              sx={{ color: "white" }}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        }
+        label="Contraseña"
+        {...register("password", { required: true })}
+      />
+    </FormControl>
   )
 
   const imageUser = showPhotoInput && (
@@ -219,15 +208,18 @@ const FormComponent = ({
       type="submit"
       style={{
         width: "100%",
+        backgroundColor: "#141514",
       }}
       onClick={handleButton}
     >
-      {buttonName}
+      {
+        loading ? <CircularProgress color="info" size={25} /> : `${buttonName}`
+      }
     </Button>
   );
 
   return (
-    <section className="flex h-[calc(100vh)] items-center justify-center">
+    <section className={`${style} flex h-[calc(100vh)] items-center justify-center`}>
       <div className="bg-zinc-800 max-w-md p-10 rounded-md">
         <span className="text-3xl flex items-center justify-center mb-3">
           X Event
@@ -242,7 +234,7 @@ const FormComponent = ({
           {buttonForm}
         </form>
       </div>
-      <ToastContainer  autoClose={isSendForm ? 3000 : 3500} closeButton={false}/>
+      <ToastContainer autoClose={isSendForm ? 3000 : 3500} closeButton={false} />
     </section>
   );
 };

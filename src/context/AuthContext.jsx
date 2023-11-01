@@ -35,10 +35,10 @@ export const AuthProvider = ({ children }) => {
         user.photo = "https://robohash.org/cancel";
         //console.log(user);
         const response = await registerRequest(user);
-        if (response){
+        if (response) {
           setIsRegister(true);
           setIsSendForm(true);
-        } 
+        }
         return;
       }
       const formData = new FormData();
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
       const response = await registerRequest(user);
       setUser(response);
-      if (response){
+      if (response) {
         setIsRegister(true);
         setIsSendForm(true);
       }
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (user) => {
     try {
       const response = await loginRequest(user);
-      console.log(response);    
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
