@@ -1,5 +1,6 @@
 import { createContext, useState, useContext } from "react";
 import { registerRequest, loginRequest, reqCloudinary } from "../api/auth";
+import { set } from "react-hook-form";
 
 export const AuthContext = createContext();
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [isRegister, setIsRegister] = useState(false);
   const [errors, setErrors] = useState(null);
   const [isSendForm, setIsSendForm] = useState(false);
+  const [resetErrors, setResetErrors] = useState(0);
 
   const signUp = async (user, img, defaultImage, cancelImg) => {
     try {
@@ -57,8 +59,9 @@ export const AuthProvider = ({ children }) => {
       }
 
     } catch (error) {
-      //console.log(error);
-      //console.log(error.response.data.message);
+      console.log(error);
+      console.log(error.response.data.message);
+      setResetErrors(prev => prev + 1);
       setErrors(error.response.data.message);
     }
   };
@@ -66,9 +69,14 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (user) => {
     try {
       const response = await loginRequest(user);
+      setUser(response);
       console.log(response);
     } catch (error) {
       console.log(error);
+      console.log(error.response.data);
+      //If the user repeat error, increment the state resetErrors for show the error
+      setResetErrors(prev => prev + 1);
+      setErrors(error.response.data);
     }
   };
 
@@ -78,6 +86,7 @@ export const AuthProvider = ({ children }) => {
     user,
     isRegister,
     errors,
-    isSendForm
+    isSendForm,
+    resetErrors
   }}>{children}</AuthContext.Provider>;
 };

@@ -10,7 +10,7 @@ import "../style/formComponent.css";
 
 const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signUp, signIn, isRegister, errors: registerErrors, isSendForm } = useAuth();
+  const { signUp, signIn, isRegister, errors: registerErrors, isSendForm, resetErrors } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
@@ -55,6 +55,7 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     const multiError4 = errorEmail + ". " + errorPassword + ". " + errorNick;
     const errorsDb = {
       "Validation error": "Por favor intente con otro correo",
+      "Unauthorized": "Usuario o contraseña incorrectos"
     };
 
     //Add the errors to the object, combination of the errors
@@ -70,20 +71,19 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
       //console.log(registerErrors);
       toast.error(errorsDb[registerErrors]);
     }
-  }, [registerErrors]);
+  }, [registerErrors, resetErrors]);
 
 
   const handleChange = (e) => {
     let file = e.target.files[0];
     //If the user cancel the image, set the default image
     if (!file) {
-      console.log("cancel image");
-      console.log(file);
-      setPreviewImg(e.target.value);
+      //console.log("cancel image");
+      setPreviewImg("https://robohash.org/cancel");
       setCancelImg(true);
       return;
     } else {
-      console.log("Choice the image");
+      //console.log("Choice the image");
       setCancelImg(false);
       setPreviewImg(file);
     }
