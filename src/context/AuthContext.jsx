@@ -10,7 +10,7 @@ export const useAuth = () => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -57,12 +57,16 @@ export const AuthProvider = ({ children }) => {
         setIsRegister(true);
         setIsSendForm(true);
       }
-
     } catch (error) {
-      console.log(error);
-      console.log(error.response.data.message);
-      setResetErrors(prev => prev + 1);
-      setErrors(error.response.data.message);
+      if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
+        const errorUser = error.response.data.errors[0].message;
+        setResetErrors((prev) => prev + 1);
+        setErrors(errorUser);
+      } else if (error.response && error.response.data && error.response.data.message) {
+        console.log(error.response.data);
+        setErrors(error.response.data.message);
+      }
+      
     }
   };
 
@@ -75,18 +79,24 @@ export const AuthProvider = ({ children }) => {
       console.log(error);
       console.log(error.response.data);
       //If the user repeat error, increment the state resetErrors for show the error
-      setResetErrors(prev => prev + 1);
+      setResetErrors((prev) => prev + 1);
       setErrors(error.response.data);
     }
   };
 
-  return <AuthContext.Provider value={{
-    signUp,
-    signIn,
-    user,
-    isRegister,
-    errors,
-    isSendForm,
-    resetErrors
-  }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        signUp,
+        signIn,
+        user,
+        isRegister,
+        errors,
+        isSendForm,
+        resetErrors,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };

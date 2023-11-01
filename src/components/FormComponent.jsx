@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../style/formComponent.css";
+import "../styles/formComponent.css";
 
 const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -45,27 +45,11 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
 
   useEffect(() => {
 
-    //Use this for translate the errors from the server
-    const errorPassword = '"password" length must be at least 6 characters long';
-    const errorNick = '"nickName" length must be at least 3 characters long';
-    const errorEmail = '"email" must be a valid email';
-    const multiError = errorPassword + ". " + errorNick;
-    const multiError2 = errorEmail + ". " + errorNick;
-    const multiError3 = errorEmail + ". " + errorPassword;
-    const multiError4 = errorEmail + ". " + errorPassword + ". " + errorNick;
     const errorsDb = {
-      "Validation error": "Por favor intente con otro correo",
-      "Unauthorized": "Usuario o contraseña incorrectos"
-    };
-
-    //Add the errors to the object, combination of the errors
-    errorsDb[errorPassword] = "La contraseña debe tener al menos 6 caracteres";
-    errorsDb[errorNick] = "El nombre debe tener al menos 3 caracteres";
-    errorsDb[multiError] = "El nombre de usuario debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
-    errorsDb[errorEmail] = "El correo debe ser valido";
-    errorsDb[multiError2] = "El correo debe ser valido y el nick debe tener al menos 3 caracteres";
-    errorsDb[multiError3] = "El correo debe ser valido y la contraseña debe tener al menos 6 caracteres";
-    errorsDb[multiError4] = "El nick debe tener al menos 3 caracteres, el correo debe ser valido y la contraseña debe tener al menos 6 caracteres.";
+      "nick_name must be unique": "Por favor intente con otro nombre de usuario",
+      "email must be unique": "El correo ya esta registrado",
+      '"password" length must be at least 6 characters long': 'La contraseña debe tener al menos 6 caracteres',
+    }
 
     if (registerErrors) {
       //console.log(registerErrors);
