@@ -3,22 +3,24 @@ import { AuthProvider } from "./context/AuthContext";
 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import LoginHome from "./pages/LoginHome";
+import VisitHome from "./pages/VisitHome";
+import Events from "./pages/Events";
+import Contacts from "./pages/Contacts";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<h1>Home</h1>} />
-          <Route path="/guessHome" element={<h1>guessHome</h1>} />
+          <Route path="/" element={<LoginHome/>} />
+          <Route path="/visitHome" element={<VisitHome/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/events" element={<h1>Events</h1>} />
-          <Route path="/contacts" element={<h1>Contactos</h1>} />
-          <Route path="/activities" element={<h1>Activities</h1>} />
-          <Route path="/add-activities" element={<h1>Add activities</h1>} />
-          <Route path="/createEvent" element={<h1>createEvent</h1>} />
-          <Route path="/profile" element={<h1>Profile</h1>} />
+          <Route path="/events" element={<Events/>} />
+          <Route path="/contacts" element={<Contacts/>} />
+          <Route path="/profile" element={<Profile/>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

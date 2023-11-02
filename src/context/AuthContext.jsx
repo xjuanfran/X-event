@@ -1,6 +1,5 @@
 import { createContext, useState, useContext } from "react";
 import { registerRequest, loginRequest, reqCloudinary } from "../api/auth";
-import { set } from "react-hook-form";
 
 export const AuthContext = createContext();
 
@@ -58,15 +57,19 @@ export const AuthProvider = ({ children }) => {
         setIsSendForm(true);
       }
     } catch (error) {
+      //console.log(error);
+      //Check if the array of errors is not empty o undefined (error of the type of the data)
       if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
         const errorUser = error.response.data.errors[0].message;
         setResetErrors((prev) => prev + 1);
         setErrors(errorUser);
-      } else if (error.response && error.response.data && error.response.data.message) {
-        console.log(error.response.data);
+      }
+      //For errors of the server
+      else if (error.response && error.response.data && error.response.data.message) {
+        console.log(error.response.data.message);
+        setResetErrors((prev) => prev + 1);
         setErrors(error.response.data.message);
       }
-      
     }
   };
 
@@ -78,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       console.log(error.response.data);
-      //If the user repeat error, increment the state resetErrors for show the error
+      //If the user repeat error, increment the state resetErrors for show the error again
       setResetErrors((prev) => prev + 1);
       setErrors(error.response.data);
     }

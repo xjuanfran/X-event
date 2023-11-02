@@ -44,12 +44,30 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
   }, [isRegister]);
 
   useEffect(() => {
-
+    //Use this for translate the errors from the server
+    const errorEmail = '"email" must be a valid email';
+    const errorNick = '"nickName" length must be at least 3 characters long';
+    const errorPassword = '"password" length must be at least 6 characters long';
+    const multiError = errorPassword + ". " + errorNick;
+    const multiError2 = errorEmail + ". " + errorNick;
+    const multiError3 = errorEmail + ". " + errorPassword;
+    const multiError4 = errorEmail + ". " + errorPassword + ". " + errorNick;
     const errorsDb = {
+      "email must be unique": "Por favor intente con otro correo",
       "nick_name must be unique": "Por favor intente con otro nombre de usuario",
-      "email must be unique": "El correo ya esta registrado",
-      '"password" length must be at least 6 characters long': 'La contraseña debe tener al menos 6 caracteres',
-    }
+      //if the user send the email or the password incorrect
+      "Unauthorized": "Por favor, verifique sus credenciales"
+    };
+
+    //Add the errors to the object, combination of the errors
+    errorsDb[errorEmail] = "El correo debe ser valido";
+    errorsDb[errorPassword] = "La contraseña debe tener al menos 6 caracteres";
+    errorsDb[errorNick] = "El nombre debe tener al menos 3 caracteres";
+    errorsDb[multiError] = "El nombre de usuario debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[errorEmail] = "El correo debe ser valido";
+    errorsDb[multiError2] = "El correo debe ser valido y el nick debe tener al menos 3 caracteres";
+    errorsDb[multiError3] = "El correo debe ser valido y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[multiError4] = "El nick debe tener al menos 3 caracteres, el correo debe ser valido y la contraseña debe tener al menos 6 caracteres.";
 
     if (registerErrors) {
       //console.log(registerErrors);
@@ -79,8 +97,8 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     console.log(values);
     setLoading(true);
     const path = window.location.pathname;
-      if (path === "/register") await signUp(values, img, defaultImage, cancelImg);
-      if (path === "/login") await signIn(values);
+    if (path === "/register") await signUp(values, img, defaultImage, cancelImg);
+    if (path === "/login" || "/login") await signIn(values);
     setLoading(false);
   });
 
@@ -181,9 +199,7 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
 
   const handleButton = () => {
     const dictionary = Object.entries(errors);
-    if (dictionary.length > 0) {
-      toast.error("Por favor, rellene todos los campos");
-    }
+    if (dictionary.length > 0) toast.error("Por favor, rellene todos los campos");
   };
 
   const buttonForm = (
