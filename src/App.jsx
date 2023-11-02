@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import LoginHome from "./pages/LoginHome";
 import VisitHome from "./pages/VisitHome";
-import Events from "./pages/Events";
+import Events from "./pages/CreateEvent";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile";
 
@@ -22,7 +22,7 @@ export default function App() {
 
           <Route element={<ProtectedRoute/>}>
             <Route path="/" element={<LoginHome />} />
-            <Route path="/events" element={<Events />} />
+            <Route path="/create-event" element={<Events />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
