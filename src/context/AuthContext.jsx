@@ -1,5 +1,6 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import { registerRequest, loginRequest, reqCloudinary } from "../api/auth";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
@@ -17,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState(null);
   const [isSendForm, setIsSendForm] = useState(false);
   const [resetErrors, setResetErrors] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const signUp = async (user, img, defaultImage, cancelImg) => {
     try {
@@ -76,16 +79,37 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (user) => {
     try {
       const response = await loginRequest(user);
-      setUser(response);
       console.log(response);
+      setUser(response);
+      setIsAuthenticated(true);
+      localStorage.setItem("userData", JSON.stringify(response.data.token));
     } catch (error) {
       console.log(error);
       console.log(error.response.data);
       //If the user repeat error, increment the state resetErrors for show the error again
       setResetErrors((prev) => prev + 1);
       setErrors(error.response.data);
+      localStorage.setItem("userData", JSON.stringify(error.response.data));
     }
   };
+
+  const localStorageValue = localStorage.getItem("userData");
+  document.cookie = `userData=${localStorageValue}; path=/`.replace(/\"/g, "");
+
+  useEffect(() => {
+    function checkLogin() {
+      const cookie = Cookies.get("userData");
+      if ( cookie == "Unauthorized" || cookie == "undefined" || cookie == "null") {
+        setIsAuthenticated(false);
+        setLoading(false);
+        return setUser(null);
+      }
+      setIsAuthenticated(true);
+      setUser(cookie);
+      setLoading(false);
+    }
+    checkLogin();
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -97,6 +121,8 @@ export const AuthProvider = ({ children }) => {
         errors,
         isSendForm,
         resetErrors,
+        isAuthenticated,
+        loading
       }}
     >
       {children}
