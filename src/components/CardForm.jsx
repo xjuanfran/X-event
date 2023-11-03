@@ -1,24 +1,90 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/cardForm.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import "../styles/cardForm.css";
+import { Button, TextField } from "@mui/material";
+import { Textarea } from "@mui/joy";
 
-const CardForm = ({ fields }) => {
+const CardForm = ({ fields, buttonName }) => {
+  const { register, handleSubmit} = useForm();
+
+  const defaultImage = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+  });
+
+  const input = fields.map((field, index) => (
+    <TextField
+      variant="outlined"
+      fullWidth
+      autoComplete="off"
+      label={field.placeholder}
+      key={index}
+      type={field.type}
+      sx={{
+        marginBottom: ".7rem",
+        backgroundColor: "#52525B",
+        borderRadius: "5px",
+      }}
+      InputLabelProps={{ style: { color: "white" } }}
+      inputProps={{ style: { color: "white" } }}
+      {...register(field.name, { required: true })}
+    />
+  ));
+
+  const textArea = (
+    <Textarea
+      color="neutral"
+      minRows={2}
+      placeholder="Descripción"
+      size="lg"
+      variant="solid"
+      sx={{
+        marginBottom: ".7rem",
+        backgroundColor: "#52525B",
+        borderRadius: "5px",
+        width: "100%",
+      }}
+      {...register("description", { required: true })}
+    />
+  );
+
+  const uploadImage = (
+    <img
+        alt="Foto evento"
+        src={defaultImage}
+      />
+  );
+
+  const buttonCard = (
+    <Button
+      variant="contained"
+      type="submit"
+      style={{
+        width: "100%",
+        backgroundColor: "#141514",
+      }}
+    >
+      {`${buttonName}`}
+    </Button>
+  );
 
   return (
-    <Link to="#" className="link-card">
-      <div className="card animate__animated animate__fadeInUp">
-        <div className="overflow">
-          <img src={""} alt="..." className="card-img-top" />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="card-container">
+        <div className="card-image">
+         {uploadImage}
         </div>
-        <div className="card-body">
-          <h4 className="card-title">{""}</h4>
-          <p className="card-text">{"description"}</p>
-          <p className="card-text">${"price"}</p>
+        <div className="card-details">
+          {input}
+          {textArea}
+          <div className="quantity-container"></div>
+          {buttonCard}
         </div>
       </div>
-    </Link>
+    </form>
   );
 };
-
 
 export default CardForm;
