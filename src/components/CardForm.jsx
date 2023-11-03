@@ -2,13 +2,21 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "../styles/cardForm.css";
-import { Button, TextField } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Textarea } from "@mui/joy";
+import { PhotoCamera } from "@mui/icons-material";
 
 const CardForm = ({ fields, buttonName }) => {
-  const { register, handleSubmit} = useForm();
+  const { register, handleSubmit } = useForm();
 
-  const defaultImage = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+  const defaultImage =
+    "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
@@ -51,11 +59,26 @@ const CardForm = ({ fields, buttonName }) => {
   );
 
   const uploadImage = (
-    <img
-        alt="Foto evento"
-        src={defaultImage}
-      />
+    <Stack direction="row" alignItems="center" spacing={0}>
+      <Typography
+        sx={{ fontWeight: "medium", textAlign: "center", fontSize: 15 }}
+      >
+        Foto identificacion
+      </Typography>
+      <IconButton color="inherit" aria-label="upload picture" component="label">
+        <input
+          hidden
+          accept="image/*"
+          type="file"
+          name="photo"
+          {...register("photo")}
+        />
+        <PhotoCamera />
+      </IconButton>
+    </Stack>
   );
+
+  const imagePreview = <img alt="Foto evento" src={defaultImage} />;
 
   const buttonCard = (
     <Button
@@ -74,7 +97,8 @@ const CardForm = ({ fields, buttonName }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="card-container">
         <div className="card-image">
-         {uploadImage}
+          {uploadImage}
+          {imagePreview}
         </div>
         <div className="card-details">
           {input}
