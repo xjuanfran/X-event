@@ -97,8 +97,13 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     console.log(values);
     setLoading(true);
     const path = window.location.pathname;
-    if (path === "/register") await signUp(values, img, defaultImage, cancelImg);
-    if (path === "/login" || "/login") await signIn(values);
+    if (path === "/register"){
+      await signUp(values, img, defaultImage, cancelImg);
+    } 
+    if (path === "/login"){
+      console.log("login");
+      await signIn(values);
+    } 
     setLoading(false);
   });
 
