@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API = "http://localhost:3000"
+const API = "https://x-event.onrender.com"
 const APICLOUDINARY = "https://api.cloudinary.com/v1_1/dmvpidbrt/image/upload"
 const APICLOUDINARYDELETE = "https://api.cloudinary.com/v1_1/dmvpidbrt/image/destroy"
 

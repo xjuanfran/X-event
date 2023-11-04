@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API = "http://localhost:3000";
+export const API = "https://x-event.onrender.com";
 
 export const getEvents = () => axios.get(`${API}/event`);
 export const getEvent = (id) => axios.get(`${API}/event/${id}`);
