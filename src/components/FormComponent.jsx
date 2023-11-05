@@ -21,7 +21,6 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
   const [showPassword, setShowPassword] = useState(false);
   //Hook to manage the loading state
   const [loading, setLoading] = useState(false);
-
   //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
@@ -36,10 +35,11 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     if (isRegister) {
       if (isSendForm) {
         toast.success("Registro exitoso");
+        setTimeout(() => {
+          navigate("/visitHome");
+        }, 4000);
+        return;
       }
-      setTimeout(() => {
-        navigate("/");
-      }, 4000);
     }
   }, [isRegister]);
 

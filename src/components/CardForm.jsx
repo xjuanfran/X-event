@@ -1,25 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { UseEvent }  from "../context/EventContext";
 import { useForm } from "react-hook-form";
 import "../styles/cardForm.css";
-import {
-  Button,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import {Button, IconButton, Stack,  TextField, Typography,} from "@mui/material";
 import { Textarea } from "@mui/joy";
 import { PhotoCamera } from "@mui/icons-material";
 
+
 const CardForm = ({ fields, buttonName }) => {
   const { register, handleSubmit } = useForm();
+  const { createEvent } = UseEvent();
+  const [previewImg, setPreviewImg] = useState(null);
+  const [cancelImg, setCancelImg] = useState(false);
+  const [img, setImg] = useState(null);
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
+    createEvent(data, defaultImage, cancelImg);
   });
 
   const input = fields.map((field, index) => (
@@ -58,12 +58,31 @@ const CardForm = ({ fields, buttonName }) => {
     />
   );
 
+  const handleChangeImage = (e) => {
+    const fileDefault = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    let file = e.target.files[0];
+    console.log(file);
+    //If the user cancel the image, set the default image
+    if (!file) {
+      //console.log("cancel image");
+      setPreviewImg(fileDefault);
+      setCancelImg(true);
+      return;
+    } else {
+      //console.log("Choice the image");
+      setCancelImg(false);
+      setPreviewImg(file);
+    }
+    setPreviewImg(URL.createObjectURL(file));
+    setImg(file);
+  };
+
   const uploadImage = (
     <Stack direction="row" alignItems="center" spacing={0}>
       <Typography
         sx={{ fontWeight: "medium", textAlign: "center", fontSize: 15 }}
       >
-        Foto identificacion
+        Foto del evento
       </Typography>
       <IconButton color="inherit" aria-label="upload picture" component="label">
         <input
@@ -72,13 +91,25 @@ const CardForm = ({ fields, buttonName }) => {
           type="file"
           name="photo"
           {...register("photo")}
+          onChange={handleChangeImage}
+
         />
         <PhotoCamera />
       </IconButton>
     </Stack>
   );
 
-  const imagePreview = <img alt="Foto evento" src={defaultImage} />;
+  const imagePreview = (previewImg ? (
+    <img
+      alt="Foto del evento"
+      src={previewImg}
+    />
+  ) : (
+    <img
+      alt="Foto evento predeterminada"
+      src={defaultImage}
+    />
+  ));;
 
   const buttonCard = (
     <Button
@@ -97,8 +128,8 @@ const CardForm = ({ fields, buttonName }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="card-container">
         <div className="card-image">
-          {uploadImage}
           {imagePreview}
+          {uploadImage}
         </div>
         <div className="card-details">
           {input}
