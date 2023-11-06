@@ -87,6 +87,7 @@ export const AuthProvider = ({ children }) => {
       console.log(error);
       console.log(error.response.data);
       //If the user repeat error, increment the state resetErrors for show the error again
+      setIsAuthenticated(false);
       setResetErrors((prev) => prev + 1);
       setErrors(error.response.data);
       localStorage.setItem("userData", JSON.stringify(error.response.data));
@@ -99,7 +100,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     function checkLogin() {
       const cookie = Cookies.get("userData");
-      if ( cookie == "Unauthorized" || cookie == "undefined" || cookie == "null") {
+      if (cookie == "Unauthorized" || cookie == "undefined" || cookie == "null") {
         setIsAuthenticated(false);
         setLoading(false);
         return setUser(null);

@@ -10,7 +10,7 @@ import "../styles/formComponent.css";
 
 const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signUp, signIn, isRegister, errors: registerErrors, isSendForm, resetErrors } = useAuth();
+  const { signUp, signIn, isRegister, errors: registerErrors, isSendForm, resetErrors, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
@@ -42,6 +42,12 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
       }
     }
   }, [isRegister]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/create-event");
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     //Use this for translate the errors from the server
@@ -101,8 +107,9 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
       await signUp(values, img, defaultImage, cancelImg);
     } 
     if (path === "/login"){
-      console.log("login");
       await signIn(values);
+      console.log(isAuthenticated);
+      //if(isAuthenticated) navigate("/create-event");
     } 
     setLoading(false);
   });

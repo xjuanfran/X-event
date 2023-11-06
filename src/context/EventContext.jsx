@@ -26,6 +26,7 @@ export const EventProvider = ({ children }) => {
           setIsRegister(true);
           setIsSendForm(true);
         }
+        console.log(response);
         return;
       }
       //If the user cancel the image, set the default image
@@ -37,6 +38,7 @@ export const EventProvider = ({ children }) => {
           setIsRegister(true);
           setIsSendForm(true);
         }
+        console.log(response);
         return;
       }
       const formData = new FormData();

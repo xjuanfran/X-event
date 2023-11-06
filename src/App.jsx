@@ -18,9 +18,9 @@ export default function App() {
       <EventProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/visitHome" element={<VisitHome />} />
+            <Route path="/visitHome" element={<VisitHome />}/>
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Register />} index/>
 
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<LoginHome />} />

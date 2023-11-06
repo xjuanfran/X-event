@@ -1,23 +1,51 @@
-import React, { useState } from "react";
-import { UseEvent }  from "../context/EventContext";
+import React, { useEffect, useState } from "react";
+import { UseEvent } from "../context/EventContext";
 import { useForm } from "react-hook-form";
 import "../styles/cardForm.css";
-import {Button, IconButton, Stack,  TextField, Typography,} from "@mui/material";
+import { Button, IconButton, Stack, TextField, Typography, } from "@mui/material";
 import { Textarea } from "@mui/joy";
 import { PhotoCamera } from "@mui/icons-material";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../context/AuthContext";
 
 
 const CardForm = ({ fields, buttonName }) => {
   const { register, handleSubmit } = useForm();
   const { createEvent } = UseEvent();
+  const { user } = useAuth();
   const [previewImg, setPreviewImg] = useState(null);
   const [cancelImg, setCancelImg] = useState(false);
   const [img, setImg] = useState(null);
+  const [tokenInfo, setTokenInfo] = useState(null);
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
+  useEffect(() => {
+    const token = document.cookie.replace(
+      /(?:(?:^|.*;\s*)userData\s*=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setTokenInfo(decodedToken);
+        //console.log(decodedToken);
+      } catch (error) {
+        //console.log("Error al decodificar el token:", error.message);
+        return;
+      }
+    } else {
+      //console.log("No se encontró el token en la cookie.");
+      return;
+    }
+  }, [user]);
+
   const onSubmit = handleSubmit((data) => {
+    console.log(tokenInfo)
+    data.creator = tokenInfo.sub;
+    data.cost = 0;
     console.log(data);
     createEvent(data, defaultImage, cancelImg);
   });
