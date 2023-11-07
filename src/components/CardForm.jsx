@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { UseEvent } from "../context/EventContext";
+import { UseActivity } from "../context/ActivityContext"
 import { useForm } from "react-hook-form";
 import "../styles/cardForm.css";
-import { Button, IconButton, Stack, TextField, Typography, } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Textarea } from "@mui/joy";
 import { PhotoCamera } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext";
 
-
-const CardForm = ({ fields, buttonName }) => {
+const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) => {
   const { register, handleSubmit } = useForm();
   const { createEvent } = UseEvent();
+  const { creaActivity } = UseActivity();
   const { user } = useAuth();
   const [previewImg, setPreviewImg] = useState(null);
   const [cancelImg, setCancelImg] = useState(false);
@@ -42,12 +49,19 @@ const CardForm = ({ fields, buttonName }) => {
     }
   }, [user]);
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(tokenInfo)
+  const onSubmit = handleSubmit(async (data) => {
+    //console.log(tokenInfo);
+    const path = window.location.pathname;
     data.creator = tokenInfo.sub;
     data.cost = 0;
-    console.log(data);
-    createEvent(data, defaultImage, cancelImg);
+    //console.log(data);
+    if(path === "/create-event"){
+      await createEvent(data, defaultImage, cancelImg);
+    }
+    if(path === "/create-activity"){
+      //here the request for create activity (createActivity)
+      console.log(data);
+    }
   });
 
   const input = fields.map((field, index) => (
@@ -87,7 +101,8 @@ const CardForm = ({ fields, buttonName }) => {
   );
 
   const handleChangeImage = (e) => {
-    const fileDefault = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    const fileDefault =
+      "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
     let file = e.target.files[0];
     console.log(file);
     //If the user cancel the image, set the default image
@@ -105,7 +120,7 @@ const CardForm = ({ fields, buttonName }) => {
     setImg(file);
   };
 
-  const uploadImage = (
+  const uploadImage = showImage && (
     <Stack direction="row" alignItems="center" spacing={0}>
       <Typography
         sx={{ fontWeight: "medium", textAlign: "center", fontSize: 15 }}
@@ -120,24 +135,19 @@ const CardForm = ({ fields, buttonName }) => {
           name="photo"
           {...register("photo")}
           onChange={handleChangeImage}
-
         />
         <PhotoCamera />
       </IconButton>
     </Stack>
   );
 
-  const imagePreview = (previewImg ? (
-    <img
-      alt="Foto del evento"
-      src={previewImg}
-    />
-  ) : (
-    <img
-      alt="Foto evento predeterminada"
-      src={defaultImage}
-    />
-  ));;
+  const imagePreview =
+    showImage &&
+    (previewImg ? (
+      <img alt="Foto del evento" src={previewImg} />
+    ) : (
+      <img alt="Foto evento predeterminada" src={defaultImage} />
+    ));
 
   const buttonCard = (
     <Button
@@ -152,11 +162,17 @@ const CardForm = ({ fields, buttonName }) => {
     </Button>
   );
 
+  const photoActivity = "https://images.pexels.com/photos/5935232/pexels-photo-5935232.jpeg?auto=compress&cs=tinysrgb&w=600"
+  const showPreviewActivity = showActivity && (
+    <img alt="Foto de la actividad" src={photoActivity} />
+  );
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="card-container">
         <div className="card-image">
           {imagePreview}
+          {showPreviewActivity}
           {uploadImage}
         </div>
         <div className="card-details">
