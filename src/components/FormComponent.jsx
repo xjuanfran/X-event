@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/formComponent.css";
 
+
 const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { signUp, signIn, isRegister, errors: registerErrors, isSendForm, resetErrors, isAuthenticated } = useAuth();

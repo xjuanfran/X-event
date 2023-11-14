@@ -1,5 +1,9 @@
-@media (max-width: 1500px) {
+@media (max-width: 1600px) {
+    .formLogin{
+      margin-top: -3rem !important;
+    }
+
     .form{
-      margin-top: 3rem !important;
+      margin-top: 1rem !important;
     }
 }

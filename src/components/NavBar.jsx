@@ -1,79 +1,187 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import SideNav, {Toggle, Nav, NavItem, NavIcon, NavText} from "@trendmicro/react-sidenav";
-import "@trendmicro/react-sidenav/dist/react-sidenav.css";
-import "../styles/navBar.css";
+import { BiMenuAltRight } from "react-icons/bi";
+import { AiOutlineClose } from "react-icons/ai";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { useAuth } from "../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
+import "../styles/navBar.scss";
 
-const NavBar = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [route, setRoute] = useState(null);
+function Navbar() {
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const [tokenInfo, setTokenInfo] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (route && selectedItem !== route) {
-      console.log(route);
-      navigate(route);
-    }
-  }, [route, selectedItem]);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
-  const items = [
-    { name: "X Event", route:"/visitHome", icon: "fa-solid fa-house" },
-    { name: "Eventos", icon: "fa-solid fa-people-group",
-      subItems: [
-        { name: "Crear eventos", route:"/create-event", icon: "fa-regular fa-calendar-plus" },
-        { name: "Ver Eventos", icon: "fa-solid fa-eye" },
-      ],
-    },
-    {
-      name: "Actividades",
-      icon: "fa-solid fa-person-skating",
-      subItems: [
-        { name: "Crear Actividad", icon: "fa-regular fa-calendar-plus" },
-        { name: "Ver Actividades", icon: "fa-solid fa-eye" },
-      ],
-    },
-    { name: "Contactos", route:"/contacts", icon: "fa-solid fa-address-book" },
-    { name: "Perfil", icon: "fa-solid fa-circle-user" },
-    { name: "Cerrar sesión", icon: "fa-solid fa-right-from-bracket" },
-  ];
-
-  const handleSelect = (selected, route) => {
-    console.log(route);
-    if(route == "/create-event")navigate("/create-event");
-    if(route == "/create-activity")navigate("/create-activity");
-    setSelectedItem(selected);
-    setRoute(route);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
   
-  const renderSubItems = (subItems) => {
-    return subItems.map((subItem, index) => (
-      <NavItem eventKey={subItem.name} key={index} onSelect={()=> handleSelect(subItem.name, subItem.route)}>
-        <NavIcon>
-          <i className={`${subItem.icon}`} style={{ fontSize: "1.2em" }}></i>
-        </NavIcon>
-        <NavText style={{ fontSize: "1.1em" }}>{subItem.name}</NavText>
-      </NavItem>
-    ));
+  const handleClose = (event) => {
+    console.log(event.target.innerText);
+    const path = "/" + event.target.innerText;
+    setAnchorEl(null);
+    navigate(path)
   };
 
-  const options = items.map((item, index) => (
-    <NavItem eventKey={item.name} key={index} onSelect={() => handleSelect(item.name, item.route)}>
-      <NavIcon>
-        <i className={`${item.icon}`} style={{ fontSize: "1.7em", color: "white" }}></i>
-      </NavIcon>
-      <NavText style={{ fontSize: "1.5em", color: "white" }}>{item.name}</NavText>
-      {item.subItems && selectedItem === item.name && <Nav>{renderSubItems(item.subItems)}</Nav>}
-    </NavItem>
-  ));
+  useEffect(() => {
+    const token = document.cookie.replace(
+      /(?:(?:^|.*;\s*)userData\s*=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setTokenInfo(decodedToken);
+      } catch (error) {
+        //console.log("Error al decodificar el token:", error.message);
+        return;
+      }
+    } else {
+      //console.log("No se encontró el token en la cookie.");
+      return;
+    }
+  }, [user]);
+
+  //if (tokenInfo) console.log(tokenInfo.firstname);
+
+  const handleLogout = () => {
+    localStorage.clear(); // Borra los datos del localStorage
+    window.location.reload(); // Recarga la página
+  };
+
+  const [size, setSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (size.width > 768 && menuOpen) {
+      setMenuOpen(false);
+    }
+  }, [size.width, menuOpen]);
+
+  const menuToggleHandler = () => {
+    setMenuOpen((prevState) => !prevState);
+  };
 
   return (
-    <SideNav className="sideNav">
-      <SideNav.Toggle />
-      <SideNav.Nav defaultSelected="home">
-        {options}
-      </SideNav.Nav>
-    </SideNav>
+    <header className="header">
+      <div className="header__content">
+        <Link to="/" className="header__content__logo">
+          X Event
+        </Link>
+        {location.pathname !== "/login" &&
+          location.pathname !== "/register" && (
+            <>
+              <nav
+                className={`header__content__nav ${
+                  menuOpen && size.width < 768 ? "isMenu" : ""
+                }`}
+              >
+                {isAuthenticated ? (
+                  <>
+                    <ul>
+                      <div>
+                        <Button
+                          id="basic-button"
+                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? "true" : undefined}
+                          onClick={handleClick}
+                        >
+                          Eventos
+                        </Button>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleClose}>Crear un evento</MenuItem>
+                          <MenuItem onClick={handleClose}>Ver mis eventos</MenuItem>
+                        </Menu>
+                      </div>
+                      <li>
+                        <Link to="/create-event">Actividades</Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/profile"
+                          data-tip="Perfil"
+                          data-for="profileTooltip"
+                        >
+                          {tokenInfo.firstName + " " + tokenInfo.lastName}
+                          <img
+                            src={tokenInfo.photo}
+                            className="fotoPerfil"
+                            alt="Foto de perfil"
+                          />
+                        </Link>
+                        {/* <tool-tip role="tooltip">Perfil</tool-tip> */}
+                      </li>
+                      <li>
+                        <button
+                          className="btn btn__logout"
+                          onClick={handleLogout}
+                        >
+                          Cerrar sesión
+                        </button>
+                      </li>
+                    </ul>
+                  </>
+                ) : (
+                  <>
+                    <ul>
+                      <li>
+                        <Link to="/catalogo">Catalogo</Link>
+                      </li>
+                      <Link to="/login">
+                        <button className="btn btn__login">
+                          Inicia sesión
+                        </button>
+                      </Link>
+                      <Link to="/register">
+                        <button className="btn">Inscríbete</button>
+                      </Link>
+                    </ul>
+                  </>
+                )}
+              </nav>
+              <div className="header__content__toggle">
+                {!menuOpen ? (
+                  <BiMenuAltRight onClick={menuToggleHandler} />
+                ) : (
+                  <AiOutlineClose onClick={menuToggleHandler} />
+                )}
+              </div>
+            </>
+          )}
+      </div>
+    </header>
   );
-};
+}
 
-export default NavBar;
+export default Navbar;
