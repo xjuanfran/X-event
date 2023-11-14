@@ -24,10 +24,13 @@ function Navbar() {
   };
   
   const handleClose = (event) => {
-    console.log(event.target.innerText);
-    const path = "/" + event.target.innerText;
     setAnchorEl(null);
-    navigate(path)
+    console.log(event.target.innerText);
+    const path = event.target.innerText;
+    if(path === "Crear un evento") navigate("/create-event");
+    if(path === "Ver mis eventos") navigate("/#");
+    if(path === "Crear una actividad") navigate("/create-activity");
+    if(path === "Ver mis actividades") navigate("/#");
   };
 
   useEffect(() => {
@@ -87,7 +90,7 @@ function Navbar() {
   return (
     <header className="header">
       <div className="header__content">
-        <Link to="/" className="header__content__logo">
+        <Link to="/visitHome" className="header__content__logo">
           X Event
         </Link>
         {location.pathname !== "/login" &&
@@ -101,6 +104,9 @@ function Navbar() {
                 {isAuthenticated ? (
                   <>
                     <ul>
+                    <li>
+                        <Link to="/">Home</Link>
+                      </li>
                       <div>
                         <Button
                           id="basic-button"
@@ -124,9 +130,29 @@ function Navbar() {
                           <MenuItem onClick={handleClose}>Ver mis eventos</MenuItem>
                         </Menu>
                       </div>
-                      <li>
-                        <Link to="/create-event">Actividades</Link>
-                      </li>
+                      <div>
+                        <Button
+                          id="basic-button"
+                          aria-controls={open ? "basic-menu" : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? "true" : undefined}
+                          onClick={handleClick}
+                        >
+                          Actividades
+                        </Button>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleClose}>Crear una actividad</MenuItem>
+                          <MenuItem onClick={handleClose}>Ver mis actividades</MenuItem>
+                        </Menu>
+                      </div>
                       <li>
                         <Link
                           to="/profile"
@@ -155,9 +181,7 @@ function Navbar() {
                 ) : (
                   <>
                     <ul>
-                      <li>
-                        <Link to="/catalogo">Catalogo</Link>
-                      </li>
+
                       <Link to="/login">
                         <button className="btn btn__login">
                           Inicia sesión
