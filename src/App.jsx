@@ -3,6 +3,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { EventProvider } from "./context/EventContext";
 import { ActivityProvider } from "./context/ActivityContext";
 
+import NavBar from "./components/NavBar";
+
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import LoginHome from "./pages/LoginHome";
@@ -20,6 +22,7 @@ export default function App() {
       <EventProvider>
         <ActivityProvider>
           <BrowserRouter>
+            <NavBar />
             <Routes>
               <Route path="/visitHome" element={<VisitHome />} />
               <Route path="/login" element={<Login />} />
