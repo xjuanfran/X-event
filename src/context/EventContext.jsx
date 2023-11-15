@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { createEventRequest } from "../api/event";
+import { createEventRequest, getEventByUserRequest } from "../api/event";
 import { reqCloudinary } from "../api/auth";
 
 export const EventContext = createContext();
@@ -14,6 +14,16 @@ export const UseEvent = () => {
 
 export const EventProvider = ({ children }) => {
   const [event, setEvent] = useState(null);
+
+  const getEventByUser = async (id) => {
+    try {
+      const response = await getEventByUserRequest(id);
+      setEvent(response);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const createEvent = async (event, img, defaultImage, cancelImg) => {
     try {
