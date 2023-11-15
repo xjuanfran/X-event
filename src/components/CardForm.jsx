@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { UseEvent } from "../context/EventContext";
-import { UseActivity } from "../context/ActivityContext"
+import { UseActivity } from "../context/ActivityContext";
 import { useForm } from "react-hook-form";
 import "../styles/cardForm.css";
 import {
+  Autocomplete,
   Button,
   IconButton,
   Stack,
@@ -15,10 +16,16 @@ import { PhotoCamera } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext";
 
-const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) => {
+const CardForm = ({
+  fields,
+  showImage = true,
+  showActivity = false,
+  showComboBox = false,
+  buttonName,
+}) => {
   const { register, handleSubmit } = useForm();
   const { createEvent } = UseEvent();
-  const { creaActivity } = UseActivity();
+  const { createActivity } = UseActivity();
   const { user } = useAuth();
   const [previewImg, setPreviewImg] = useState(null);
   const [cancelImg, setCancelImg] = useState(false);
@@ -27,6 +34,8 @@ const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) 
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+
+  const listEvents = [{ label: "The Shawshank Redemption", year: 1994 }];
 
   useEffect(() => {
     const token = document.cookie.replace(
@@ -52,15 +61,16 @@ const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) 
   const onSubmit = handleSubmit(async (data) => {
     //console.log(tokenInfo);
     const path = window.location.pathname;
-    data.creator = tokenInfo.sub;
-    data.cost = 0;
     //console.log(data);
-    if(path === "/create-event"){
+    if (path === "/create-event") {
+      data.creator = tokenInfo.sub;
+      data.cost = 0;
       await createEvent(data, defaultImage, cancelImg);
     }
-    if(path === "/create-activity"){
-      //here the request for create activity (createActivity)
-      console.log(data);
+    if (path === "/create-activity") {
+      data.creatorId = tokenInfo.sub;
+      data.state = "Pendiente";
+      await createActivity(data);
     }
   });
 
@@ -99,6 +109,38 @@ const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) 
       {...register("description", { required: true })}
     />
   );
+
+  const comboBox = showComboBox && (
+    <Autocomplete
+      disablePortal
+      fullWidth
+      sx={{
+        marginBottom: ".7rem",
+        backgroundColor: "#52525B",
+        borderRadius: "5px",
+        '& .MuiInputBase-root': {
+          color: 'white',
+          '& .MuiAutocomplete-endAdornment': {
+            '& .MuiSvgIcon-root': {
+              color: 'white',
+            },
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: 'white',
+        },
+      }}
+      id="combo-box-demo"
+      options={listEvents}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Evento asociado"
+        />
+      )}
+    />
+  );
+  
 
   const handleChangeImage = (e) => {
     const fileDefault =
@@ -162,7 +204,8 @@ const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) 
     </Button>
   );
 
-  const photoActivity = "https://images.pexels.com/photos/5935232/pexels-photo-5935232.jpeg?auto=compress&cs=tinysrgb&w=600"
+  const photoActivity =
+    "https://images.pexels.com/photos/5935232/pexels-photo-5935232.jpeg?auto=compress&cs=tinysrgb&w=600";
   const showPreviewActivity = showActivity && (
     <img alt="Foto de la actividad" src={photoActivity} />
   );
@@ -178,6 +221,7 @@ const CardForm = ({ fields, showImage = true, showActivity=false, buttonName }) 
         <div className="card-details">
           {input}
           {textArea}
+          {comboBox}
           <div className="quantity-container"></div>
           {buttonCard}
         </div>

@@ -45,21 +45,8 @@
     font-family: 'Lato', sans-serif;
   }
 
-  .card-details button {
-    background-color: #2a9c9d;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    width: 50%;
-    border-radius: 12px;
-    font-family: 'Lato', sans-serif;
-
-  }
-
-  .card-details button:hover{
-    background-color: #f36273;
-    color: white;
+  .inputCombo{
+    color: #fff ;
   }
 
   @media (max-width: 1000px) {

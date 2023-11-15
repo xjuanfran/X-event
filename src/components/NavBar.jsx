@@ -127,29 +127,8 @@ function Navbar() {
                           }}
                         >
                           <MenuItem onClick={handleClose}>Crear un evento</MenuItem>
-                          <MenuItem onClick={handleClose}>Ver mis eventos</MenuItem>
-                        </Menu>
-                      </div>
-                      <div>
-                        <Button
-                          id="basic-button"
-                          aria-controls={open ? "basic-menu" : undefined}
-                          aria-haspopup="true"
-                          aria-expanded={open ? "true" : undefined}
-                          onClick={handleClick}
-                        >
-                          Actividades
-                        </Button>
-                        <Menu
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={open}
-                          onClose={handleClose}
-                          MenuListProps={{
-                            "aria-labelledby": "basic-button",
-                          }}
-                        >
                           <MenuItem onClick={handleClose}>Crear una actividad</MenuItem>
+                          <MenuItem onClick={handleClose}>Ver mis eventos</MenuItem>
                           <MenuItem onClick={handleClose}>Ver mis actividades</MenuItem>
                         </Menu>
                       </div>
