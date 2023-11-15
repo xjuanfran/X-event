@@ -110,6 +110,8 @@ function Navbar() {
                       <div>
                         <Button
                           id="basic-button"
+                          sx={{ color: "white" }}
+                          className="btnEvent"
                           aria-controls={open ? "basic-menu" : undefined}
                           aria-haspopup="true"
                           aria-expanded={open ? "true" : undefined}

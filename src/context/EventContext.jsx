@@ -14,12 +14,13 @@ export const UseEvent = () => {
 
 export const EventProvider = ({ children }) => {
   const [event, setEvent] = useState(null);
+  const [eventUser , setEventUser] = useState(null);
 
   const getEventByUser = async (id) => {
     try {
       const response = await getEventByUserRequest(id);
-      setEvent(response);
-      console.log(response);
+      setEventUser(response.data);
+      //console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -73,6 +74,8 @@ export const EventProvider = ({ children }) => {
       value={{
         event,
         createEvent,
+        getEventByUser,
+        eventUser
       }}
     >
       {children}

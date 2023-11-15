@@ -24,18 +24,17 @@ const CardForm = ({
   buttonName,
 }) => {
   const { register, handleSubmit } = useForm();
-  const { createEvent } = UseEvent();
+  const { createEvent, getEventByUser, eventUser } = UseEvent();
   const { createActivity } = UseActivity();
   const { user } = useAuth();
   const [previewImg, setPreviewImg] = useState(null);
   const [cancelImg, setCancelImg] = useState(false);
   const [img, setImg] = useState(null);
   const [tokenInfo, setTokenInfo] = useState(null);
+  const [listEvents, setListEvents] = useState([]); // Agrega este estado
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
-
-  const listEvents = [{ label: "The Shawshank Redemption", year: 1994 }];
 
   useEffect(() => {
     const token = document.cookie.replace(
@@ -57,6 +56,23 @@ const CardForm = ({
       return;
     }
   }, [user]);
+
+  useEffect(() => {
+    if (tokenInfo) {
+      getEventByUser(tokenInfo.sub);
+    }
+  }, [tokenInfo]);
+
+  useEffect(() => {
+    console.log(eventUser);
+    if (eventUser === null) return;
+    const events = eventUser.map((event) => {
+      console.log(event.name);
+      return { label: event.name };
+    });
+
+    setListEvents(events);
+  }, [eventUser]);
 
   const onSubmit = handleSubmit(async (data) => {
     //console.log(tokenInfo);
@@ -118,29 +134,25 @@ const CardForm = ({
         marginBottom: ".7rem",
         backgroundColor: "#52525B",
         borderRadius: "5px",
-        '& .MuiInputBase-root': {
-          color: 'white',
-          '& .MuiAutocomplete-endAdornment': {
-            '& .MuiSvgIcon-root': {
-              color: 'white',
+        "& .MuiInputBase-root": {
+          color: "white",
+          "& .MuiAutocomplete-endAdornment": {
+            "& .MuiSvgIcon-root": {
+              color: "white",
             },
           },
         },
-        '& .MuiInputLabel-root': {
-          color: 'white',
+        "& .MuiInputLabel-root": {
+          color: "white",
         },
       }}
       id="combo-box-demo"
       options={listEvents}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Evento asociado"
-        />
+        <TextField {...params} label="Evento asociado" />
       )}
     />
   );
-  
 
   const handleChangeImage = (e) => {
     const fileDefault =

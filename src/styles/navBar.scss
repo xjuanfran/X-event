@@ -17,7 +17,7 @@
   }
   
   .fotoPerfil {
-    width: 3.5rem;
+    width: 3rem;
     margin-top: -1rem;
     margin-left: 1rem;
   }
@@ -117,14 +117,20 @@
               font-family: sans-serif;
   
               &:hover {
-                background: rgba(#fff, 0.1);
+                color: rgb(162, 162, 246);
               }
-  
-              &:active {
-                border-radius: calc(#{12px} + 6px);
-                background: linear-gradient(rgba(#fff, 0.1), rgba(#fff, 0.2));
-              }
+
             }
+          }
+        }
+
+        .btnEvent{
+          color: #fff;
+          text-transform: capitalize;
+          font-size: 1rem;
+
+          &:hover {
+            color: rgb(162, 162, 246);
           }
         }
   
@@ -134,39 +140,40 @@
           border-radius: 12px;
           font-size: 1rem;
           font-family: sans-serif;
-          background: rgb(162, 162, 246);
-          color: rgb(32, 32, 32);
-          border: 1px solid transparent;
+          background: rgb(162, 162, 246) !important;
+          color: rgb(32, 32, 32) !important;
+          border: 1px solid transparent !important;
           transition: 0.3s ease all;
           margin-top: 1rem;
+          margin-right: .3rem;
           margin-bottom: 1rem;
   
           &:hover {
-            border-color: rgb(162, 162, 246);
-            background: rgba(rgb(162, 162, 246), 0.1);
-            color: rgb(162, 162, 246);
+            border-color: rgb(162, 162, 246) !important;
+            background: rgba(rgb(162, 162, 246), 0.1) !important;
+            color: rgb(162, 162, 246) !important;
           }
   
           &:active {
-            border-color: rgb(162, 162, 246);
+            border-color: rgb(162, 162, 246) !important;
             background: linear-gradient(
-              rgba(rgb(162, 162, 246), 0.2),
+              rgba(rgb(162, 162, 246), 0.2) ,
               rgba(rgb(162, 162, 246), 0.3)
             );
-            color: rgb(162, 162, 246);
+            color: rgb(162, 162, 246) !important;
           }
   
           &__login {
-            background-color: rgb(32, 32, 32);
-            color: #fff;
+            background-color: rgb(32, 32, 32) !important;
+            color: #fff !important;
             border: none;
   
             &:hover {
-              background-color: rgba(rgb(32, 32, 32), 0.1);
+              background-color: rgba(rgb(32, 32, 32), 0.1) !important;
               color: #fff;
               background-clip: text;
               -webkit-background-clip: text;
-              color: rgb(162, 162, 246);
+              color: rgb(162, 162, 246) !important;
             }
           }
   
