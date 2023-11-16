@@ -3,26 +3,13 @@ import { UseEvent } from "../context/EventContext";
 import { UseActivity } from "../context/ActivityContext";
 import { useForm } from "react-hook-form";
 import "../styles/cardForm.css";
-import {
-  Autocomplete,
-  Button,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Autocomplete, Button, IconButton, Stack, TextField, Typography} from "@mui/material";
 import { Textarea } from "@mui/joy";
 import { PhotoCamera } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext";
 
-const CardForm = ({
-  fields,
-  showImage = true,
-  showActivity = false,
-  showComboBox = false,
-  buttonName,
-}) => {
+const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox = false, buttonName }) => {
   const { register, handleSubmit } = useForm();
   const { createEvent, getEventByUser, eventUser } = UseEvent();
   const { createActivity } = UseActivity();
@@ -39,7 +26,7 @@ const CardForm = ({
 
   const handleChangeOption = (event, value) => {
     //console.log(event);
-    console.log(value.id);
+    //console.log(value.id);
     setEventId(value.id);
   };
 
@@ -73,8 +60,8 @@ const CardForm = ({
   useEffect(() => {
     if (eventUser === null) return;
     const events = eventUser.map((event) => {
-      console.log(event.id);
-      console.log(event.name);
+      //console.log(event.id);
+      //console.log(event.name);
       return { label: event.name, id: event.id };
     });
 
@@ -94,7 +81,6 @@ const CardForm = ({
       data.eventId = eventId;
       data.creatorId = tokenInfo.sub;
       data.state = "Pendiente";
-      console.log(data);
       await createActivity(data);
     }
   });

@@ -53,11 +53,9 @@ function Navbar() {
     }
   }, [user]);
 
-  //if (tokenInfo) console.log(tokenInfo.firstname);
-
   const handleLogout = () => {
-    localStorage.clear(); // Borra los datos del localStorage
-    window.location.reload(); // Recarga la página
+    localStorage.clear(); // Clear local storage
+    window.location.reload(); // Reload page
   };
 
   const [size, setSize] = useState({
