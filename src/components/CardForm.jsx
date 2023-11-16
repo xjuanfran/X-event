@@ -31,10 +31,17 @@ const CardForm = ({
   const [cancelImg, setCancelImg] = useState(false);
   const [img, setImg] = useState(null);
   const [tokenInfo, setTokenInfo] = useState(null);
-  const [listEvents, setListEvents] = useState([]); // Agrega este estado
+  const [listEvents, setListEvents] = useState([]);
+  const [eventId, setEventId] = useState(null);
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+
+  const handleChangeOption = (event, value) => {
+    //console.log(event);
+    console.log(value.id);
+    setEventId(value.id);
+  };
 
   useEffect(() => {
     const token = document.cookie.replace(
@@ -64,11 +71,11 @@ const CardForm = ({
   }, [tokenInfo]);
 
   useEffect(() => {
-    console.log(eventUser);
     if (eventUser === null) return;
     const events = eventUser.map((event) => {
+      console.log(event.id);
       console.log(event.name);
-      return { label: event.name };
+      return { label: event.name, id: event.id };
     });
 
     setListEvents(events);
@@ -84,8 +91,10 @@ const CardForm = ({
       await createEvent(data, defaultImage, cancelImg);
     }
     if (path === "/create-activity") {
+      data.eventId = eventId;
       data.creatorId = tokenInfo.sub;
       data.state = "Pendiente";
+      console.log(data);
       await createActivity(data);
     }
   });
@@ -148,6 +157,7 @@ const CardForm = ({
       }}
       id="combo-box-demo"
       options={listEvents}
+      onChange={handleChangeOption}
       renderInput={(params) => (
         <TextField {...params} label="Evento asociado" />
       )}

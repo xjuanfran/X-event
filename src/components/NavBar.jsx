@@ -25,7 +25,7 @@ function Navbar() {
   
   const handleClose = (event) => {
     setAnchorEl(null);
-    console.log(event.target.innerText);
+    //console.log(event.target.innerText);
     const path = event.target.innerText;
     if(path === "Crear un evento") navigate("/create-event");
     if(path === "Ver mis eventos") navigate("/#");
