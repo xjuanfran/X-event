@@ -14,8 +14,10 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isRegister, setIsRegister] = useState(false);
+  //Use for send error only the path "/register" and only one time
   const [errors, setErrors] = useState(null);
+  const [isSendError, setIsSendError] = useState(false);
+  
   const [isSendForm, setIsSendForm] = useState(false);
   const [resetErrors, setResetErrors] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,6 @@ export const AuthProvider = ({ children }) => {
         const response = await registerRequest(user);
         //console.log(response);
         if (response) {
-          setIsRegister(true);
           setIsSendForm(true);
         }
         return;
@@ -40,7 +41,6 @@ export const AuthProvider = ({ children }) => {
         //console.log(user);
         const response = await registerRequest(user);
         if (response) {
-          setIsRegister(true);
           setIsSendForm(true);
         }
         return;
@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }) => {
       const response = await registerRequest(user);
       setUser(response);
       if (response) {
-        setIsRegister(true);
         setIsSendForm(true);
       }
     } catch (error) {
@@ -66,12 +65,14 @@ export const AuthProvider = ({ children }) => {
         const errorUser = error.response.data.errors[0].message;
         setResetErrors((prev) => prev + 1);
         setErrors(errorUser);
+        setIsSendError(true);
       }
       //For errors of the server
       else if (error.response && error.response.data && error.response.data.message) {
-        console.log(error.response.data.message);
+        //console.log(error.response.data.message);
         setResetErrors((prev) => prev + 1);
         setErrors(error.response.data.message);
+        setIsSendError(true);
       }
     }
   };
@@ -79,7 +80,7 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (user) => {
     try {
       const response = await loginRequest(user);
-      console.log(response);
+      //console.log(response);
       setUser(response);
       setIsAuthenticated(true);
       localStorage.setItem("userData", JSON.stringify(response.data.token));
@@ -118,12 +119,14 @@ export const AuthProvider = ({ children }) => {
         signUp,
         signIn,
         user,
-        isRegister,
         errors,
         isSendForm,
+        setIsSendForm,
         resetErrors,
         isAuthenticated,
-        loading
+        loading,
+        isSendError,
+        setIsSendError
       }}
     >
       {children}
