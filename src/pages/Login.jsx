@@ -15,6 +15,7 @@ const Login = () => {
       showPhotoInput={false}
       showImage={false}
       buttonName={buttonLogin}
+      separationLogin={true}
     />
   )
 }

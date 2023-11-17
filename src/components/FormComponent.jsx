@@ -1,19 +1,43 @@
 import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
-import { Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField,Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/formComponent.css";
 
-const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,buttonName }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+const FormComponent = ({
+  fields,
+  style,
+  showPhotoInput = true,
+  showImage = true,
+  buttonName,
+  separationLogin = false,
+  separationRegister = false,
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const {
     signUp,
     signIn,
     errors: registerErrors,
+    errorsLogin,
     isSendForm,
     setIsSendForm,
     resetErrors,
@@ -48,7 +72,7 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     if (isSendForm) {
       toast.success("Registro exitoso");
       setTimeout(() => {
-        navigate("/visitHome");
+        navigate("/");
       }, 4000);
       setIsSendForm(false);
       return;
@@ -98,7 +122,12 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
       toast.error(errorsDb[registerErrors]);
       setIsSendError(false);
     }
-  }, [registerErrors, resetErrors]);
+
+    if (errorsLogin && isSendError) {
+      toast.error(errorsDb[errorsLogin]);
+      setIsSendError(false);
+    }
+  }, [registerErrors, resetErrors, errorsLogin]);
 
   const handleChange = (e) => {
     let file = e.target.files[0];
@@ -250,6 +279,28 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     </Button>
   );
 
+  const registerRedirect = separationRegister && (
+    <div className="register">
+      <p className="hola">
+        ¿Ya tienes una cuenta? &nbsp;
+        <Link className="fontStyle" to="/login">
+          Inicia sesión
+        </Link>
+      </p>
+    </div>
+  );
+
+  const loginRedirect = separationLogin && (
+    <div className="register">
+      <p className="hola">
+        ¿No tienes una cuenta? &nbsp;
+        <Link className="fontStyle" to="/register">
+          Registrate
+        </Link>
+      </p>
+    </div>
+  );
+
   return (
     <section
       className={`${style} flex h-[calc(100vh)] items-center justify-center`}
@@ -267,6 +318,8 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
           </div>
           {buttonForm}
         </form>
+        {registerRedirect}
+        {loginRedirect}
       </div>
       <ToastContainer
         autoClose={isSendForm ? 3000 : 3500}

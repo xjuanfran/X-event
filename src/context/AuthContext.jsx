@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   //Use for send error only the path "/register" and only one time
   const [errors, setErrors] = useState(null);
+  const [errorsLogin, setErrorsLogin] = useState(null);
   const [isSendError, setIsSendError] = useState(false);
   
   const [isSendForm, setIsSendForm] = useState(false);
@@ -90,7 +91,8 @@ export const AuthProvider = ({ children }) => {
       //If the user repeat error, increment the state resetErrors for show the error again
       setIsAuthenticated(false);
       setResetErrors((prev) => prev + 1);
-      setErrors(error.response.data);
+      setErrorsLogin(error.response.data);
+      setIsSendError(true);
       localStorage.setItem("userData", JSON.stringify(error.response.data));
     }
   };
@@ -126,7 +128,8 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         loading,
         isSendError,
-        setIsSendError
+        setIsSendError,
+        errorsLogin
       }}
     >
       {children}

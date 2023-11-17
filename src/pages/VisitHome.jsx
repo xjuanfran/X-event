@@ -3,9 +3,12 @@ import Typewriter from "typewriter-effect";
 import "../styles/visitHome.css";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const VisitHome = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
   const rocket =
     "https://res-console.cloudinary.com/dmvpidbrt/media_explorer_thumbnails/9affb7755bd706d1f1412333c4ebb72e/detailed";
 
@@ -16,37 +19,66 @@ const VisitHome = () => {
     <Button
       variant="contained"
       type="submit"
-      sx={{backgroundColor: "rgb(90 90 247)", marginTop: "20px"}}
-      onClick={() => {navigate("/register")}}
+      sx={{ backgroundColor: "rgb(90 90 247)", marginTop: "20px" }}
+      onClick={() => {
+        navigate("/register");
+      }}
     >
       Comenzar
     </Button>
   );
 
   return (
-    <section className="section">
-      <div className="contP">
-        <div className="containerTitle">
-          <Typewriter
-            onInit={(typewriter) => {
-              typewriter.typeString("X-Event").pauseFor(5000).start();
-            }}
-            options={{
-              delay: 70,
-              deleteSpeed: 60,
-              loop: true,
-              wrapperClassName: "text",
-              cursorClassName: "cursor",
-            }}
-          />
-          <span className="textIntro">{textXEvent}</span>
-          {buttonRegister}
-        </div>
-        <div className="floating-container">
-          <img src={rocket} alt="cohete" className="floating size" />
-        </div>
-      </div>
-    </section>
+    <>
+      {isAuthenticated ? (
+        <section className="section">
+          <div className="contP">
+            <div className="containerTitle">
+              <Typewriter
+                onInit={(typewriter) => {
+                  typewriter.typeString("X-Event").pauseFor(5000).start();
+                }}
+                options={{
+                  delay: 70,
+                  deleteSpeed: 60,
+                  loop: true,
+                  wrapperClassName: "text",
+                  cursorClassName: "cursor",
+                }}
+              />
+              <span className="textIntro">{textXEvent}</span>
+            </div>
+            <div className="floating-container">
+              <img src={rocket} alt="cohete" className="floating size" />
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="section">
+          <div className="contP">
+            <div className="containerTitle">
+              <Typewriter
+                onInit={(typewriter) => {
+                  typewriter.typeString("X-Event").pauseFor(5000).start();
+                }}
+                options={{
+                  delay: 70,
+                  deleteSpeed: 60,
+                  loop: true,
+                  wrapperClassName: "text",
+                  cursorClassName: "cursor",
+                }}
+              />
+              <span className="textIntro">{textXEvent}</span>
+              {buttonRegister}
+            </div>
+            <div className="floating-container">
+              <img src={rocket} alt="cohete" className="floating size" />
+            </div>
+          </div>
+        </section>
+      )}
+    </>
   );
 };
 

@@ -3,12 +3,19 @@ import { UseEvent } from "../context/EventContext";
 import { useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import "../styles/cardShow.css";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const CardShow = () => {
   const { user } = useAuth();
-  const { getEventByUser, eventUser } = UseEvent();
+  const navigate = useNavigate();
+  const { getEventByUserCreator, eventUser } = UseEvent();
   const [tokenInfo, setTokenInfo] = useState(null);
   const [listEvents, setListEvents] = useState([]);
+
+  const handleChangePage = () => {
+    navigate("/create-event");
+  }
 
   useEffect(() => {
     const token = document.cookie.replace(
@@ -33,7 +40,7 @@ const CardShow = () => {
 
   useEffect(() => {
     if (tokenInfo) {
-      getEventByUser(tokenInfo.sub);
+      getEventByUserCreator(tokenInfo.sub);
     }
   }, [tokenInfo]);
 
@@ -46,6 +53,20 @@ const CardShow = () => {
     console.log(events);
   }, [eventUser]);
 
+  const buttonCreateEvent = (
+    <Button
+      variant="contained"
+      type="submit"
+      style={{
+        marginTop: "1.5rem",
+        backgroundColor: "#141514",
+      }}
+      onClick={handleChangePage}
+    >
+      Crear un evento
+    </Button>
+  )
+
   return (
     <section className="container-shopping">
       <div className="title">
@@ -54,7 +75,7 @@ const CardShow = () => {
       {listEvents?.length > 0 ? (
         <div className="cart-container">
           {listEvents.map((item, index) => (
-            <div className="cart-item" key={item.productId}>
+            <div className="cart-item" key={index}>
               <div className="cart-item-image">
                 <img src={item.photo} alt={item.title} />
               </div>
@@ -80,7 +101,7 @@ const CardShow = () => {
                 quis sed eveniet quas autem assumenda libero.
               </p>
               <div className="button-align">
-                <button onClick={""}>Crear un evento</button>
+                {buttonCreateEvent}
               </div>
             </div>
           </div>

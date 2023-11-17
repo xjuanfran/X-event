@@ -65,3 +65,23 @@
 }
 
 /* Media Queries */
+@media (max-width: 770px) {
+  .contP{
+    display: block !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 90vh;
+  }
+  .contP img{
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .textIntro {
+    display: flex;
+    width: 80vw;
+    color: #afb9c5;
+    font-family: sans-serif;
+  }
+}
