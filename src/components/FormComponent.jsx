@@ -101,7 +101,7 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    console.log(values);
+    //console.log(values);
     setLoading(true);
     const path = window.location.pathname;
     if (path === "/register"){
