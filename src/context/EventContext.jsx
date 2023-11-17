@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { createEventRequest, getEventByUserRequest } from "../api/event";
+import { createEventRequest, getEventCreator } from "../api/event";
 import { reqCloudinary } from "../api/auth";
 
 export const EventContext = createContext();
@@ -16,9 +16,9 @@ export const EventProvider = ({ children }) => {
   const [event, setEvent] = useState(null);
   const [eventUser , setEventUser] = useState(null);
 
-  const getEventByUser = async (id) => {
+  const getEventByUserCreator = async (id) => {
     try {
-      const response = await getEventByUserRequest(id);
+      const response = await getEventCreator(id);
       setEventUser(response.data);
       //console.log(response.data);
     } catch (error) {
@@ -30,25 +30,19 @@ export const EventProvider = ({ children }) => {
     try {
       //Condiction if the user don't upload an image, set the default image
       if (img === null) {
-        user.photo = defaultImage;
-        const response = await registerRequest(user);
+        event.photo = defaultImage;
+        const response = await createEventRequest(event);
+        setEvent(event)
         //console.log(response);
-        if (response) {
-          setIsRegister(true);
-          setIsSendForm(true);
-        }
         console.log(response);
         return;
       }
       //If the user cancel the image, set the default image
       if (cancelImg) {
-        user.photo = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+        event.photo = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
         //console.log(user);
-        const response = await registerRequest(user);
-        if (response) {
-          setIsRegister(true);
-          setIsSendForm(true);
-        }
+        const response = await createEventRequest(event);
+        setEvent(event)
         console.log(response);
         return;
       }
@@ -74,7 +68,7 @@ export const EventProvider = ({ children }) => {
       value={{
         event,
         createEvent,
-        getEventByUser,
+        getEventByUserCreator,
         eventUser
       }}
     >

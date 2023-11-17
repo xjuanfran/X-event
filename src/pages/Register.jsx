@@ -19,6 +19,7 @@ const Register = () => {
       showPhotoInput={true}
       showImage
       buttonName={buttonRegister}
+      separationRegister={true}
     />
   )
 }

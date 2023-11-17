@@ -8,10 +8,11 @@ import { Textarea } from "@mui/joy";
 import { PhotoCamera } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox = false, buttonName }) => {
   const { register, handleSubmit } = useForm();
-  const { createEvent, getEventByUser, eventUser } = UseEvent();
+  const { createEvent, getEventByUserCreator, eventUser } = UseEvent();
   const { createActivity } = UseActivity();
   const { user } = useAuth();
   const [previewImg, setPreviewImg] = useState(null);
@@ -20,6 +21,7 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
   const [tokenInfo, setTokenInfo] = useState(null);
   const [listEvents, setListEvents] = useState([]);
   const [eventId, setEventId] = useState(null);
+  const navigate = useNavigate();
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
@@ -53,7 +55,7 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
 
   useEffect(() => {
     if (tokenInfo) {
-      getEventByUser(tokenInfo.sub);
+      getEventByUserCreator(tokenInfo.sub);
     }
   }, [tokenInfo]);
 
@@ -68,6 +70,24 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
     setListEvents(events);
   }, [eventUser]);
 
+  const handleChangeImage = (e) => {
+    let file = e.target.files[0];
+    console.log(file);
+    //If the user cancel the image, set the default image
+    if (!file) {
+      //console.log("cancel image");
+      setPreviewImg("https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+      setCancelImg(true);
+      return;
+    } else {
+      //console.log("Choice the image");
+      setCancelImg(false);
+      setPreviewImg(file);
+    }
+    setPreviewImg(URL.createObjectURL(file));
+    setImg(file);
+  };
+
   const onSubmit = handleSubmit(async (data) => {
     //console.log(tokenInfo);
     const path = window.location.pathname;
@@ -75,13 +95,17 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
     if (path === "/create-event") {
       data.creator = tokenInfo.sub;
       data.cost = 0;
-      await createEvent(data, defaultImage, cancelImg);
+      await createEvent(data, img, defaultImage, cancelImg);
+      //For the moment, the user is redirect to the home page when create an event without validation
+      navigate("/")
     }
     if (path === "/create-activity") {
       data.eventId = eventId;
       data.creatorId = tokenInfo.sub;
       data.state = "Pendiente";
+      //For the moment, the user is redirect to the home page when create an activity without validation
       await createActivity(data);
+      navigate("/")
     }
   });
 
@@ -149,26 +173,6 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
       )}
     />
   );
-
-  const handleChangeImage = (e) => {
-    const fileDefault =
-      "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
-    let file = e.target.files[0];
-    console.log(file);
-    //If the user cancel the image, set the default image
-    if (!file) {
-      //console.log("cancel image");
-      setPreviewImg(fileDefault);
-      setCancelImg(true);
-      return;
-    } else {
-      //console.log("Choice the image");
-      setCancelImg(false);
-      setPreviewImg(file);
-    }
-    setPreviewImg(URL.createObjectURL(file));
-    setImg(file);
-  };
 
   const uploadImage = showImage && (
     <Stack direction="row" alignItems="center" spacing={0}>

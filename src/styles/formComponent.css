@@ -1,3 +1,23 @@
+.register {
+  height: 50px;
+  border-radius: 10px;
+  font-family: 'Lato', sans-serif;
+}
+
+
+.register p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 4.3%;
+  font-family: sans-serif;
+}
+
+.fontStyle {
+  font-family: sans-serif;
+  color: rgb(162, 162, 246);
+}
+
 @media (max-width: 1600px) {
     .formLogin{
       margin-top: -3rem !important;
