@@ -8,6 +8,7 @@ import { Textarea } from "@mui/joy";
 import { PhotoCamera } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox = false, buttonName }) => {
   const { register, handleSubmit } = useForm();
@@ -20,6 +21,7 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
   const [tokenInfo, setTokenInfo] = useState(null);
   const [listEvents, setListEvents] = useState([]);
   const [eventId, setEventId] = useState(null);
+  const navigate = useNavigate();
 
   const defaultImage =
     "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
@@ -94,12 +96,16 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
       data.creator = tokenInfo.sub;
       data.cost = 0;
       await createEvent(data, img, defaultImage, cancelImg);
+      //For the moment, the user is redirect to the home page when create an event without validation
+      navigate("/")
     }
     if (path === "/create-activity") {
       data.eventId = eventId;
       data.creatorId = tokenInfo.sub;
       data.state = "Pendiente";
+      //For the moment, the user is redirect to the home page when create an activity without validation
       await createActivity(data);
+      navigate("/")
     }
   });
 

@@ -32,6 +32,7 @@ export const EventProvider = ({ children }) => {
       if (img === null) {
         event.photo = defaultImage;
         const response = await createEventRequest(event);
+        setEvent(event)
         //console.log(response);
         console.log(response);
         return;
@@ -41,6 +42,7 @@ export const EventProvider = ({ children }) => {
         event.photo = "https://images.pexels.com/photos/1387174/pexels-photo-1387174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
         //console.log(user);
         const response = await createEventRequest(event);
+        setEvent(event)
         console.log(response);
         return;
       }
