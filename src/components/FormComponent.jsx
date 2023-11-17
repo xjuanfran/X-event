@@ -1,5 +1,5 @@
 import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
-import { Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField,Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
@@ -8,10 +8,20 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/formComponent.css";
 
-
-const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName }) => {
+const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,buttonName }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signUp, signIn, isRegister, errors: registerErrors, isSendForm, resetErrors, isAuthenticated } = useAuth();
+  const {
+    signUp,
+    signIn,
+    errors: registerErrors,
+    isSendForm,
+    setIsSendForm,
+    resetErrors,
+    isAuthenticated,
+    isSendError,
+    setIsSendError,
+  } = useAuth();
+
   const navigate = useNavigate();
   //Use for preview the image
   const [previewImg, setPreviewImg] = useState(null);
@@ -19,9 +29,11 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
   const [img, setImg] = useState(null);
   //Use for cancel the image and set the default image
   const [cancelImg, setCancelImg] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   //Hook to manage the loading state
   const [loading, setLoading] = useState(false);
+
   //Generate a random image for the user
   const randomImages = Math.random();
   const defaultImage = `https://robohash.org/${randomImages}`;
@@ -33,16 +45,15 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
   };
 
   useEffect(() => {
-    if (isRegister) {
-      if (isSendForm) {
-        toast.success("Registro exitoso");
-        setTimeout(() => {
-          navigate("/visitHome");
-        }, 4000);
-        return;
-      }
+    if (isSendForm) {
+      toast.success("Registro exitoso");
+      setTimeout(() => {
+        navigate("/visitHome");
+      }, 4000);
+      setIsSendForm(false);
+      return;
     }
-  }, [isRegister]);
+  }, [isSendForm]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -54,34 +65,40 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     //Use this for translate the errors from the server
     const errorEmail = '"email" must be a valid email';
     const errorNick = '"nickName" length must be at least 3 characters long';
-    const errorPassword = '"password" length must be at least 6 characters long';
+    const errorPassword =
+      '"password" length must be at least 6 characters long';
     const multiError = errorPassword + ". " + errorNick;
     const multiError2 = errorEmail + ". " + errorNick;
     const multiError3 = errorEmail + ". " + errorPassword;
     const multiError4 = errorEmail + ". " + errorPassword + ". " + errorNick;
     const errorsDb = {
       "email must be unique": "Por favor intente con otro correo",
-      "nick_name must be unique": "Por favor intente con otro nombre de usuario",
+      "nick_name must be unique":
+        "Por favor intente con otro nombre de usuario",
       //if the user send the email or the password incorrect
-      "Unauthorized": "Por favor, verifique sus credenciales"
+      Unauthorized: "Por favor, verifique sus credenciales",
     };
 
     //Add the errors to the object, combination of the errors
     errorsDb[errorEmail] = "El correo debe ser valido";
     errorsDb[errorPassword] = "La contraseña debe tener al menos 6 caracteres";
     errorsDb[errorNick] = "El nombre debe tener al menos 3 caracteres";
-    errorsDb[multiError] = "El nombre de usuario debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[multiError] =
+      "El nombre de usuario debe tener al menos 3 caracteres y la contraseña debe tener al menos 6 caracteres";
     errorsDb[errorEmail] = "El correo debe ser valido";
-    errorsDb[multiError2] = "El correo debe ser valido y el nick debe tener al menos 3 caracteres";
-    errorsDb[multiError3] = "El correo debe ser valido y la contraseña debe tener al menos 6 caracteres";
-    errorsDb[multiError4] = "El nick debe tener al menos 3 caracteres, el correo debe ser valido y la contraseña debe tener al menos 6 caracteres.";
+    errorsDb[multiError2] =
+      "El correo debe ser valido y el nick debe tener al menos 3 caracteres";
+    errorsDb[multiError3] =
+      "El correo debe ser valido y la contraseña debe tener al menos 6 caracteres";
+    errorsDb[multiError4] =
+      "El nick debe tener al menos 3 caracteres, el correo debe ser valido y la contraseña debe tener al menos 6 caracteres.";
 
-    if (registerErrors) {
+    if (registerErrors && isSendError) {
       //console.log(registerErrors);
       toast.error(errorsDb[registerErrors]);
+      setIsSendError(false);
     }
   }, [registerErrors, resetErrors]);
-
 
   const handleChange = (e) => {
     let file = e.target.files[0];
@@ -92,7 +109,6 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
       setCancelImg(true);
       return;
     } else {
-      //console.log("Choice the image");
       setCancelImg(false);
       setPreviewImg(file);
     }
@@ -101,20 +117,18 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    console.log(values);
+    //console.log(values);
     setLoading(true);
     const path = window.location.pathname;
-    if (path === "/register"){
+    if (path === "/register") {
       await signUp(values, img, defaultImage, cancelImg);
-    } 
-    if (path === "/login"){
+    }
+    if (path === "/login") {
       await signIn(values);
-      console.log(isAuthenticated);
-      //if(isAuthenticated) navigate("/create-event");
-    } 
+      //console.log(isAuthenticated);
+    }
     setLoading(false);
   });
-
 
   const input = fields.map((field, index) => (
     <TextField
@@ -139,14 +153,20 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
     <FormControl fullWidth variant="outlined">
       <InputLabel
         style={{ color: "white" }}
-        htmlFor="outlined-adornment-password">Contraseña
+        htmlFor="outlined-adornment-password"
+      >
+        Contraseña
       </InputLabel>
       <OutlinedInput
-        name='password'
+        name="password"
         id="outlined-adornment-password"
         inputProps={{ style: { color: "white" } }}
-        type={showPassword ? 'text' : 'password'}
-        sx={{ marginBottom: ".7rem", backgroundColor: "#52525B", borderRadius: "5px" }}
+        type={showPassword ? "text" : "password"}
+        sx={{
+          marginBottom: ".7rem",
+          backgroundColor: "#52525B",
+          borderRadius: "5px",
+        }}
         endAdornment={
           <InputAdornment position="end">
             <IconButton
@@ -164,7 +184,7 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
         {...register("password", { required: true })}
       />
     </FormControl>
-  )
+  );
 
   const imageUser = showPhotoInput && (
     <Stack direction="row" alignItems="center" spacing={0}>
@@ -212,7 +232,8 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
 
   const handleButton = () => {
     const dictionary = Object.entries(errors);
-    if (dictionary.length > 0) toast.error("Por favor, rellene todos los campos");
+    if (dictionary.length > 0)
+      toast.error("Por favor, rellene todos los campos");
   };
 
   const buttonForm = (
@@ -225,14 +246,14 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
       }}
       onClick={handleButton}
     >
-      {
-        loading ? <CircularProgress color="info" size={25} /> : `${buttonName}`
-      }
+      {loading ? <CircularProgress color="info" size={25} /> : `${buttonName}`}
     </Button>
   );
 
   return (
-    <section className={`${style} flex h-[calc(100vh)] items-center justify-center`}>
+    <section
+      className={`${style} flex h-[calc(100vh)] items-center justify-center`}
+    >
       <div className="bg-zinc-800 max-w-md p-10 rounded-md">
         <span className="text-3xl flex items-center justify-center mb-3">
           X Event
@@ -247,7 +268,10 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
           {buttonForm}
         </form>
       </div>
-      <ToastContainer autoClose={isSendForm ? 3000 : 3500} closeButton={false} />
+      <ToastContainer
+        autoClose={isSendForm ? 3000 : 3500}
+        closeButton={false}
+      />
     </section>
   );
 };
