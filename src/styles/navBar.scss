@@ -7,6 +7,17 @@
     }
   }
   
+  /** for apply mediaQ to search */
+  input{
+    padding-left: .5rem !important;
+    margin-right: .5rem !important;
+  }
+
+  .search{
+    display: flex;
+    margin-left: 1rem;
+  }
+
   .shoppingCar {
     width: 35px;
     height: 35px;
@@ -216,4 +227,5 @@
         }
       }
     }
+    
   }

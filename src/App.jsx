@@ -13,6 +13,8 @@ import Events from "./pages/CreateEvent";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile";
 import CreateActivity from "./pages/CreateActivity";
+import EventActivity from "./pages/EventActivity";
+import Activity from "./pages/Activity";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -31,7 +33,9 @@ export default function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<LoginHome />} />
                 <Route path="/create-event" element={<Events />} />
+                <Route path="/activity" element={<Activity />} />
                 <Route path="/create-activity" element={<CreateActivity />} />
+                <Route path="/eventsActivities/:id" element={<EventActivity />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>

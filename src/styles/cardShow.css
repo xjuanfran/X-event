@@ -42,9 +42,14 @@
     display: flex;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+    margin-bottom: 1rem;
     padding: 1rem;
     width: 100%;
     border-radius: 12px;
+  }
+  
+  .styleLink{
+    width: 100%;
   }
   
   .cart-item-image {

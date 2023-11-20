@@ -3,7 +3,7 @@ import { UseEvent } from "../context/EventContext";
 import { useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import "../styles/cardShow.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
 const CardShow = () => {
@@ -75,18 +75,20 @@ const CardShow = () => {
       {listEvents?.length > 0 ? (
         <div className="cart-container">
           {listEvents.map((item, index) => (
-            <div className="cart-item" key={index}>
+            <Link to={`/eventsActivities/${item.id}`} key={index} className="styleLink">
+            <div className="cart-item" >
               <div className="cart-item-image">
                 <img src={item.photo} alt={item.title} />
               </div>
               <div className="cart-item-details">
-                <h2>{item.name}</h2>
+                <h2>Nombre del evento: {item.name}</h2>
                 <p>Tipo de evento: {item.type}</p>
                 <p>
                   Descripcion: {item.description}
                 </p>
               </div>
             </div>
+            </Link>
           ))}
         </div>
       ) : (
