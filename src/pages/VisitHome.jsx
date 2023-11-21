@@ -10,7 +10,7 @@ const VisitHome = () => {
   const { isAuthenticated } = useAuth();
 
   const rocket =
-    "https://res-console.cloudinary.com/dmvpidbrt/media_explorer_thumbnails/9affb7755bd706d1f1412333c4ebb72e/detailed";
+    "https://res.cloudinary.com/dmvpidbrt/image/upload/v1700232527/Portafolio/w9bpixhjxmrlyrvfojv1.png";
 
   const textXEvent =
     "¡Bienvenido a tu nuevo destino para la creación de experiencias inolvidables! En nuestra plataforma, no solo organizamos eventos, sino que te brindamos un espacio personalizado donde puedes dar rienda suelta a tu creatividad y planificar momentos extraordinarios con tus amigos. Desde fiestas exclusivas hasta actividades emocionantes, nuestra aplicación te ofrece la libertad de diseñar encuentros únicos y compartirlos con aquellos que más aprecias. Únete a nosotros y descubre la emoción de tener tu propio centro de operaciones para la diversión, donde cada evento se convierte en una oportunidad para crear recuerdos duraderos. ¡Explora, crea y celebra con nosotros!";

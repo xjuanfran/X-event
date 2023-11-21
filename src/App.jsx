@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import CreateActivity from "./pages/CreateActivity";
 import EventActivity from "./pages/EventActivity";
 import Activity from "./pages/Activity";
+import ProfileUsers from "./pages/profileUsers";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -38,6 +39,7 @@ export default function App() {
                 <Route path="/eventsActivities/:id" element={<EventActivity />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/profileUsers" element={<ProfileUsers />} />
               </Route>
             </Routes>
           </BrowserRouter>
