@@ -15,7 +15,7 @@ import Profile from "./pages/Profile";
 import CreateActivity from "./pages/CreateActivity";
 import EventActivity from "./pages/EventActivity";
 import Activity from "./pages/Activity";
-import ProfileUsers from "./pages/profileUsers";
+import ProfileUsers from "./pages/ProfileUsers";
 
 import ProtectedRoute from "./ProtectedRoute";
 

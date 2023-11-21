@@ -12,18 +12,27 @@ import { jwtDecode } from "jwt-decode";
 import "../styles/navBar.scss";
 import { Badge, Box, IconButton } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
+import { useForm } from "react-hook-form";
+
 
 function Navbar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, getPersonNick } = useAuth();
   const [tokenInfo, setTokenInfo] = useState(null);
+  const { register, handleSubmit} = useForm();
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
+  const onSubmit = handleSubmit (async (data) => {
+    await getPersonNick(data.nickName);
+    navigate("/profileUsers");
+  });
+
+ 
   const style = {
     position: "absolute",
     top: "50%",
@@ -122,20 +131,24 @@ function Navbar() {
                 {isAuthenticated ? (
                   <>
                     <ul>
-                      <li className="search">
-                        <input
-                          className="form-control mr-sm-2 size"
-                          type="search"
-                          placeholder="Buscar un contacto"
-                          aria-label="Search"
-                        />
-                        <button
-                          className="btn btn-outline-success my-2 my-sm-0"
-                          type="submit"
-                        >
-                          Buscar
-                        </button>
-                      </li>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <li className="search">
+                          <input
+                            className="form-control mr-sm-2 size"
+                            type="search"
+                            placeholder="Buscar un contacto"
+                            aria-label="Search"
+                            {...register("nickName")}
+
+                          />
+                          <button
+                            className="btn btn-outline-success my-2 my-sm-0"
+                            type="submit"
+                          >
+                            Buscar
+                          </button>
+                        </li>
+                      </form>
                       <li>
                         <Link to="/">Home</Link>
                       </li>
