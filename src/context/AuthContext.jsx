@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log("buscando usuario...");
       const response = await getPersonNickName(nickName);
-      console.log(response.data[0]);
+      //console.log(response.data[0]);
       setSearchUser(response.data[0]);
     } catch (error) {
       console.log(error);

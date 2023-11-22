@@ -1,32 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext';
+import { Button } from '@mui/material';
 
 function ProfileUsers() {
 
   const { searchUser } = useAuth();
-  const [infouser, setInfouser] = useState(null);
-
-  useEffect(() => {
-    console.log(searchUser);
-  }, [searchUser]);
-
-
-  // const loadUser = async () => {
-  //   try {
-  //     console.log("Cargando datos del usuario...");
-  //     const user = await fetch("https://x-event.onrender.com/user/byNickName/rod");
-  //     const data = await user.json();
-  //     console.log(data[0]);
-  //     setInfouser(data[0]);
-  //   } catch (error) {
-  //     console.error("Error al cargar los datos del usuario:", error);
-  //   }
-  // };
   
-
-  // useEffect(() => {
-  //   loadUser();
-  // }, []);
+  const handleSend = () => {
+    console.log("enviando solicitud");
+  }
 
   return (
     <section className="profile-container">
@@ -40,9 +22,12 @@ function ProfileUsers() {
             <p>Nickname: {searchUser?.nickName}</p>
             <p>
               Nombre y apellido:{" "}
-              {`${searchUser?.firstName} ${infouser?.lastName}`}
+              {`${searchUser?.firstName} ${searchUser?.lastName}`}
             </p>
             <p>Email: {searchUser?.email}</p>
+            <Button variant="contained" color="primary" fullWidth sx={{backgroundColor:"rgb(101, 101, 238)"}} onClick={handleSend}>
+              Agregar contacto
+            </Button>
           </div>
         </div>
       </div>
