@@ -14,25 +14,23 @@ import { Badge, Box, IconButton } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
 import { useForm } from "react-hook-form";
 
-
 function Navbar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { isAuthenticated, user, getPersonNick } = useAuth();
   const [tokenInfo, setTokenInfo] = useState(null);
-  const { register, handleSubmit} = useForm();
+  const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
-  const onSubmit = handleSubmit (async (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     await getPersonNick(data.nickName);
     navigate("/profileUsers");
   });
 
- 
   const style = {
     position: "absolute",
     top: "50%",
@@ -105,7 +103,7 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (size.width > 768 && menuOpen) {
+    if (size.width > 860 && menuOpen) {
       setMenuOpen(false);
     }
   }, [size.width, menuOpen]);
@@ -125,7 +123,7 @@ function Navbar() {
             <>
               <nav
                 className={`header__content__nav ${
-                  menuOpen && size.width < 768 ? "isMenu" : ""
+                  menuOpen && size.width < 860 ? "isMenu" : ""
                 }`}
               >
                 {isAuthenticated ? (
@@ -139,7 +137,6 @@ function Navbar() {
                             placeholder="Buscar un contacto"
                             aria-label="Search"
                             {...register("nickName")}
-
                           />
                           <button
                             className="btn btn-outline-success my-2 my-sm-0"
@@ -189,6 +186,7 @@ function Navbar() {
                           to="/profile"
                           data-tip="Perfil"
                           data-for="profileTooltip"
+                          className="profilePhoto"
                         >
                           {tokenInfo.firstName + " " + tokenInfo.lastName}
                           <img

@@ -1,10 +1,23 @@
 @mixin breakpoint($point) {
     @if $point ==md {
-      // 768px
-      @media (min-width: 48em) {
+      @media (min-width: 860px) {
         @content;
       }
     }
+  }
+
+  @media screen and (max-width: 918px) {
+    .header__content__logo{
+      font-size: 1.7rem !important;
+      margin-left: 1rem !important;
+    }  
+  }
+
+  @media screen and (max-width: 884px) {
+    .header__content__logo{
+      font-size: 1.2rem !important;
+      margin-right: -2rem !important;
+    }  
   }
 
   @media screen and (max-width: 750px) {
@@ -22,6 +35,15 @@
   .search{
     display: flex;
     margin-left: 1rem;
+  }
+
+  @media screen and (max-width: 1150px) {
+    .search input{
+      width: 180px !important;
+    } 
+    .profilePhoto img{
+      display: none;
+    }
   }
 
   .shoppingCar {
@@ -233,5 +255,18 @@
         }
       }
     }
-    
   }
+
+  @media screen and (max-width: 860px) {
+    .header__content__logo{
+      font-size: 2rem !important;
+    }
+
+    .header__content__nav form{
+      margin-bottom: 32px !important;
+    }
+  
+    .header__content__nav div{
+      margin-bottom: 32px !important;
+    }
+    } 
