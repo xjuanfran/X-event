@@ -1,14 +1,16 @@
-.title{
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: white;
+.containerShowA{
+    display: flex;
+    margin: 0 3rem;
 }
 
-.image{
-    width: 100%;
-}
-
-.image img{
-    width: 50%;
+@media screen and (max-width: 500px) {
+    .containerShowA{
+        display: block;
+        margin-bottom: 1rem;
+    }
+    .card {
+        width: 100%; /* La tarjeta ocupa todo el ancho del contenedor */
+        max-width: 400px; /* O ajusta el valor máximo según tus necesidades */
+        margin-bottom: 1rem;
+    }
 }

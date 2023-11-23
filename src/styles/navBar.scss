@@ -6,6 +6,12 @@
       }
     }
   }
+
+  @media screen and (max-width: 750px) {
+    .search {
+      display: none !important;
+    }  
+  }
   
   /** for apply mediaQ to search */
   input{
