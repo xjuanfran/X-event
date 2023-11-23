@@ -9,7 +9,7 @@ import { Button } from "@mui/material";
 const CardShow = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { getEventByUserCreator, eventUser } = UseEvent();
+  const { getEventByUserCreator, eventUser, getActivityUser, activityUser } = UseEvent();
   const [tokenInfo, setTokenInfo] = useState(null);
   const [listEvents, setListEvents] = useState([]);
 
@@ -39,19 +39,25 @@ const CardShow = () => {
   }, [user]);
 
   useEffect(() => {
-    if (tokenInfo) {
-      getEventByUserCreator(tokenInfo.sub);
-    }
+      if (tokenInfo) {
+        if(window.location.pathname === "/")getEventByUserCreator(tokenInfo.sub);
+        else getActivityUser(tokenInfo.sub);
+      }
   }, [tokenInfo]);
 
   useEffect(() => {
-    if (eventUser === null) return;
-    const events = eventUser.map((event) => {
-      return event;
-    });
-    setListEvents(events);
+    const events = eventUser ? [...eventUser] : [];
+const activities = activityUser
+  ? activityUser.map((activity) => ({
+      ...activity,
+      photo:"	https://images.pexels.com/photos/5935232/pexels-photo-5935232.jpeg?auto=compress&cs=tinysrgb&w=600"
+    }))
+  : [];
+  
+    setListEvents(window.location.pathname === "/" ? events : activities);
     console.log(events);
-  }, [eventUser]);
+  }, [eventUser, activityUser]);
+  
 
   const buttonCreateEvent = (
     <Button
@@ -82,7 +88,7 @@ const CardShow = () => {
               </div>
               <div className="cart-item-details">
                 <h2>Nombre del evento: {item.name}</h2>
-                <p>Tipo de evento: {item.type}</p>
+                {item.type ? <p>Tipo de evento: {item.type}</p> : null}
                 <p>
                   Descripcion: {item.description}
                 </p>

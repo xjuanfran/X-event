@@ -1,7 +1,9 @@
 import axios from "axios";
 
-export const API = "https://x-event.onrender.com";
+const local= "http://localhost:3000";
+const render = "https://x-event.onrender.com";
 
+const API = local;
 export const getEvents = () => axios.get(`${API}/event`);
 export const getEvent = (id) => axios.get(`${API}/event/${id}`);
 export const getEventCreator = (id) => axios.get(`${API}/event/byUser/${id}`);

@@ -1,6 +1,9 @@
 import axios from "axios"
 
-const API = "https://x-event.onrender.com"
+const local= "http://localhost:3000";
+const render = "https://x-event.onrender.com";
+
+const API = local;
 const APICLOUDINARY = "https://api.cloudinary.com/v1_1/dmvpidbrt/image/upload"
 
 export const registerRequest = (user) => axios.post(`${API}/user`, user)
