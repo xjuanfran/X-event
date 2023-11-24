@@ -9,8 +9,8 @@
         margin-bottom: 1rem;
     }
     .card {
-        width: 100%; /* La tarjeta ocupa todo el ancho del contenedor */
-        max-width: 400px; /* O ajusta el valor máximo según tus necesidades */
+        width: 100%;
+        max-width: 400px; 
         margin-bottom: 1rem;
     }
 }
