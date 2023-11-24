@@ -85,8 +85,8 @@ export default function CardShow() {
     }));
   };
 
-  const handleActivity = () => {
-    navigate("/activity");
+  const handleActivity = (eventId) => {
+    navigate(`/eventsActivities/${eventId}`);
   };
 
   return (
@@ -152,8 +152,8 @@ export default function CardShow() {
                         marginTop: "1rem",
                         backgroundColor: "rgb(101, 101, 238)",
                       }}
-                      onClick={handleActivity}
-                    >
+                      onClick={() => handleActivity(event.id)}
+                      >
                       Ver actividades
                     </Button>
                     <Button
