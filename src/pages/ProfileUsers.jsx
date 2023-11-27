@@ -48,11 +48,11 @@ function ProfileUsers() {
     console.log(searchUser);
     const infoUser = {
       contact: searchUser.id,
-      email: searchUser.email,
+      userId: tokenInfo.sub,
       state: "pending",
     };
     console.log(infoUser);
-    const response = await fetch("https://x-event.onrender.com/contacts", {
+    const response = await fetch("http://localhost:3000/contact", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

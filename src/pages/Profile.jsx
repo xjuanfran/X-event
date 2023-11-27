@@ -43,7 +43,7 @@ const Profile = () => {
               Nombre y apellido:{" "}
               {`${tokenInfo?.firstName} ${tokenInfo?.lastName}`}
             </p>
-            <p>Email: {tokenInfo?.email}</p>
+            <p className="emailText">Email: {tokenInfo?.email}</p>
           </div>
         </div>
       </div>

@@ -2,17 +2,19 @@ import AspectRatio from "@mui/joy/AspectRatio";
 import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
-import Typography from "@mui/joy/Typography";
 import React, { useEffect, useState } from "react";
 import { UseEvent } from "../context/EventContext";
 import { useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import "../styles/cardShow.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
+import Modal from "@mui/material/Modal";
+import { Box, Typography } from "@mui/material";
+import { set } from "react-hook-form";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -33,6 +35,23 @@ export default function CardShow() {
   const [tokenInfo, setTokenInfo] = useState(null);
   const [listEvents, setListEvents] = useState([]);
   const [expanded, setExpanded] = useState({});
+  const [contact, setContact] = useState([]);
+
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    color: "black",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   useEffect(() => {
     const token = document.cookie.replace(
@@ -89,6 +108,41 @@ export default function CardShow() {
     navigate(`/eventsActivities/${eventId}`);
   };
 
+  const handleSendInvitation = () => {
+    setOpenModal(true);
+  };
+
+  const loadContacts = async () => {
+    try {
+      const resContacts = await fetch("http://localhost:3000/contact");
+      const dataContacts = await resContacts.json();
+  
+      let contactIdArray = [];
+      dataContacts.forEach((contact) => {
+        contactIdArray.push(contact.contact);
+      });
+      console.log(contactIdArray);
+  
+      const dataArray = [];
+  
+      for (let contactId of contactIdArray) {
+        const resUser = await fetch(`http://localhost:3000/user/${contactId}`);
+        const dataUser = await resUser.json();
+        dataArray.push(dataUser);
+      }
+  
+      console.log(dataArray);
+      setContact(dataArray);
+    } catch (error) {
+      console.error("Error al cargar contactos:", error);
+    }
+  };
+  
+
+  useEffect(() => {
+    loadContacts();
+  }, []);
+
   return (
     <section className="containerShowEvent">
       {listEvents.length > 0
@@ -133,7 +187,10 @@ export default function CardShow() {
                     </Typography>
                     <Typography level="title-lg">Participantes</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nulla, quaerat exercitationem quod architecto sapiente maiores tenetur quis vel debitis saepe voluptatibus quia sit atque quas neque, ut nisi quam totam!
+                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                      Nulla, quaerat exercitationem quod architecto sapiente
+                      maiores tenetur quis vel debitis saepe voluptatibus quia
+                      sit atque quas neque, ut nisi quam totam!
                     </Typography>
                   </div>
                 </CardContent>
@@ -153,7 +210,7 @@ export default function CardShow() {
                         backgroundColor: "rgb(101, 101, 238)",
                       }}
                       onClick={() => handleActivity(event.id)}
-                      >
+                    >
                       Ver actividades
                     </Button>
                     <Button
@@ -167,6 +224,7 @@ export default function CardShow() {
                         fontWeight: 600,
                         backgroundColor: "rgb(101, 101, 238)",
                       }}
+                      onClick={handleSendInvitation}
                     >
                       Agregar participantes
                     </Button>
@@ -176,6 +234,26 @@ export default function CardShow() {
             </Card>
           ))
         : null}
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Invitar contactos
+          </Typography>
+          {contact.map((contact) => (
+            <ul key={contact.id}>
+              <li>
+                {contact.firstName + " " + contact.lastName}
+              </li>
+            </ul>
+          ))  
+          }
+        </Box>
+      </Modal>
     </section>
   );
 }
