@@ -36,6 +36,7 @@ export default function CardShow() {
   const [listEvents, setListEvents] = useState([]);
   const [expanded, setExpanded] = useState({});
   const [contact, setContact] = useState([]);
+  const [eventIdGlobal, setEventIdGlobal] = useState(null);
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleCloseModal = () => setOpenModal(false);
@@ -45,12 +46,13 @@ export default function CardShow() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: 400, 
     bgcolor: "background.paper",
     color: "black",
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+    backgroundColor: "#141514"
   };
 
   useEffect(() => {
@@ -108,7 +110,9 @@ export default function CardShow() {
     navigate(`/eventsActivities/${eventId}`);
   };
 
-  const handleSendInvitation = () => {
+  const handleSendInvitation = (eventId) => {
+    console.log("enviar invitacion " + eventId);
+    setEventIdGlobal(eventId);
     setOpenModal(true);
   };
 
@@ -116,32 +120,50 @@ export default function CardShow() {
     try {
       const resContacts = await fetch("http://localhost:3000/contact");
       const dataContacts = await resContacts.json();
-  
+
       let contactIdArray = [];
       dataContacts.forEach((contact) => {
         contactIdArray.push(contact.contact);
       });
       console.log(contactIdArray);
-  
+
       const dataArray = [];
-  
+
       for (let contactId of contactIdArray) {
         const resUser = await fetch(`http://localhost:3000/user/${contactId}`);
         const dataUser = await resUser.json();
         dataArray.push(dataUser);
       }
-  
+
       console.log(dataArray);
       setContact(dataArray);
     } catch (error) {
       console.error("Error al cargar contactos:", error);
     }
   };
-  
 
   useEffect(() => {
     loadContacts();
   }, []);
+
+  const handleAddUserEvent = async (contactId) => {    
+    console.log(eventIdGlobal);
+    const bodyParticipant = {
+      eventId: eventIdGlobal,
+      userId: contactId,
+      state: "pending",
+      cost: 0,
+    };
+    const res = await fetch("http://localhost:3000/participant/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyParticipant),
+    });
+    const data = await res.json();
+    console.log(data);
+  };
 
   return (
     <section className="containerShowEvent">
@@ -151,8 +173,8 @@ export default function CardShow() {
               sx={{
                 width: 500,
                 marginRight: ".5rem",
-                height: expanded[event.id] ? "auto" : 350, // Ajusta el valor de altura según necesites
-                transition: "height 0.3s ease", // Agrega una transición suave
+                height: expanded[event.id] ? "auto" : 350,
+                transition: "height 0.3s ease", 
               }}
               key={event.id}
               className="card"
@@ -217,14 +239,13 @@ export default function CardShow() {
                       variant="solid"
                       size="md"
                       color="primary"
-                      aria-label="Explore Bahamas Islands"
                       sx={{
                         ml: "auto",
                         alignSelf: "center",
                         fontWeight: 600,
                         backgroundColor: "rgb(101, 101, 238)",
                       }}
-                      onClick={handleSendInvitation}
+                      onClick={() => handleSendInvitation(event.id)}
                     >
                       Agregar participantes
                     </Button>
@@ -241,17 +262,37 @@ export default function CardShow() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            className="titleContact"
+            style={{ marginBottom: '16px' }} // Agrega marg
+          >
             Invitar contactos
           </Typography>
+          <div style={{ maxHeight: '30vh', overflowY: 'auto' }} className="scroll">
           {contact.map((contact) => (
             <ul key={contact.id}>
-              <li>
+              <li className="contactItems">
                 {contact.firstName + " " + contact.lastName}
+                <Button
+                  variant="solid"
+                  size="md"
+                  color="primary"
+                  aria-label="Explore Bahamas Islands"
+                  sx={{
+                    fontWeight: 600,
+                    backgroundColor: "rgb(101, 101, 238)",
+                  }}
+                  onClick={() => handleAddUserEvent(contact.id)}
+                >
+                  Invitar
+                </Button>
               </li>
             </ul>
-          ))  
-          }
+          ))}
+          </div>
         </Box>
       </Modal>
     </section>
