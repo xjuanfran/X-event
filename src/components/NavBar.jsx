@@ -21,6 +21,7 @@ function Navbar() {
   const [tokenInfo, setTokenInfo] = useState(null);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const [infoNotification, setInfoNotification] = useState(null);
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpen = () => setOpenModal(true);
@@ -111,6 +112,36 @@ function Navbar() {
   const menuToggleHandler = () => {
     setMenuOpen((prevState) => !prevState);
   };
+
+  const contactNotification = async () => {
+    console.log("contactando al server");
+    //console.log(tokenInfo);
+    const res = await fetch(`https://x-event.onrender.com/contact/`);
+    const data = await res.json();
+    //console.log(data);
+    const contacts = data.filter((item) => item.contact === tokenInfo.sub);
+    //console.log(contacts);
+    const notifications = contacts.filter((item) => item.state === "pending");
+    console.log(notifications);
+    const newData = await Promise.all(
+      notifications.map(async (item) => {
+        console.log(item.userId);
+        const res = await fetch(
+          `https://x-event.onrender.com/user/${item.userId}`
+        );
+        const data = await res.json();
+        console.log(data);
+        return data; // Retorna el resultado de cada llamada a la API
+      })
+    );
+    console.log(newData);
+    setInfoNotification(newData);
+  };
+
+  useEffect(() => {
+    console.log(infoNotification);
+    if (tokenInfo) contactNotification();
+  }, [tokenInfo]);
 
   return (
     <header className="header">
@@ -225,7 +256,23 @@ function Navbar() {
                             id="modal-modal-description"
                             sx={{ mt: 2 }}
                           >
-                            lorem ipsum dolor sit amet, consectetur adipiscing
+                            {infoNotification?.map((item) => (
+                              <ul key={item.id}>
+                                <li>item.firstName</li>
+                                <Button
+                                  variant="solid"
+                                  size="md"
+                                  color="primary"
+                                  aria-label="Explore Bahamas Islands"
+                                  sx={{
+                                    fontWeight: 600,
+                                    backgroundColor: "rgb(101, 101, 238)",
+                                  }}
+                                >
+                                  Invitar
+                                </Button>
+                              </ul>
+                            ))}
                           </Typography>
                         </Box>
                       </Modal>

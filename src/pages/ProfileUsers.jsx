@@ -43,6 +43,17 @@ function ProfileUsers() {
     else setUserNotFound(false);
   }, [searchUser]);
 
+  const sendInitationState = async () => {
+    console.log("contactando al server");
+    const res = await fetch("https://x-event.onrender.com/contact")
+    const data = await res.json()
+    console.log(data)
+  }
+
+  useEffect(() => {
+    sendInitationState()
+  }, [])
+
   const handleSend = async () => {
     console.log("enviando solicitud");
     console.log(searchUser);
@@ -52,7 +63,7 @@ function ProfileUsers() {
       state: "pending",
     };
     console.log(infoUser);
-    const response = await fetch("http://localhost:3000/contact", {
+    const response = await fetch("https://x-event.onrender.com/contact", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

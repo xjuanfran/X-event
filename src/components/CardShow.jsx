@@ -292,7 +292,7 @@ export default function CardShow() {
             variant="h6"
             component="h2"
             className="titleContact"
-            style={{ marginBottom: '16px' }} // Agrega marg
+            style={{ marginBottom: '16px' }} 
           >
             Invitar contactos
           </Typography>
