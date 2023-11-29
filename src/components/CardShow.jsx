@@ -14,7 +14,6 @@ import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import Modal from "@mui/material/Modal";
 import { Box, Typography } from "@mui/material";
-import { set } from "react-hook-form";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -46,7 +45,7 @@ export default function CardShow() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400, 
+    width: 400,
     bgcolor: "background.paper",
     color: "black",
     border: "2px solid #000",
@@ -88,10 +87,10 @@ export default function CardShow() {
     const events = eventUser ? [...eventUser] : [];
     const activities = activityUser
       ? activityUser.map((activity) => ({
-          ...activity,
-          photo:
-            "	https://images.pexels.com/photos/5935232/pexels-photo-5935232.jpeg?auto=compress&cs=tinysrgb&w=600",
-        }))
+        ...activity,
+        photo:
+          "	https://images.pexels.com/photos/5935232/pexels-photo-5935232.jpeg?auto=compress&cs=tinysrgb&w=600",
+      }))
       : [];
 
     setListEvents(window.location.pathname === "/" ? events : activities);
@@ -111,14 +110,14 @@ export default function CardShow() {
   };
 
   const handleSendInvitation = (eventId) => {
-    console.log("enviar invitacion " + eventId);
+    console.log("evento Id " + eventId);
     setEventIdGlobal(eventId);
     setOpenModal(true);
   };
 
   const loadContacts = async () => {
     try {
-      const resContacts = await fetch("http://localhost:3000/contact");
+      const resContacts = await fetch("https://x-event.onrender.com/contact");
       const dataContacts = await resContacts.json();
 
       let contactIdArray = [];
@@ -130,7 +129,7 @@ export default function CardShow() {
       const dataArray = [];
 
       for (let contactId of contactIdArray) {
-        const resUser = await fetch(`http://localhost:3000/user/${contactId}`);
+        const resUser = await fetch(`https://x-event.onrender.com/user/${contactId}`);
         const dataUser = await resUser.json();
         dataArray.push(dataUser);
       }
@@ -146,7 +145,8 @@ export default function CardShow() {
     loadContacts();
   }, []);
 
-  const handleAddUserEvent = async (contactId) => {    
+  const handleAddUserEvent = async (contactId) => {
+    console.log("contacto Id " + contactId);  
     console.log(eventIdGlobal);
     const bodyParticipant = {
       eventId: eventIdGlobal,
@@ -154,7 +154,7 @@ export default function CardShow() {
       state: "pending",
       cost: 0,
     };
-    const res = await fetch("http://localhost:3000/participant/", {
+    const res = await fetch("https://x-event.onrender.com/participant/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -169,92 +169,117 @@ export default function CardShow() {
     <section className="containerShowEvent">
       {listEvents.length > 0
         ? listEvents.map((event) => (
-            <Card
-              sx={{
-                width: 500,
-                marginRight: ".5rem",
-                height: expanded[event.id] ? "auto" : 350,
-                transition: "height 0.3s ease", 
-              }}
-              key={event.id}
-              className="card"
+          <Card
+            sx={{
+              width: 300,
+              marginRight: ".5rem",
+              marginBottom: "1rem",
+              height: expanded[event.id] ? "auto" : 350,
+              transition: "height 0.3s ease",
+            }}
+            key={event.id}
+            className="card"
+          >
+            <div>
+              <Typography level="title-lg">{event.name}</Typography>
+              <Typography level="body-sm">{event.createdAt}</Typography>
+            </div>
+            <AspectRatio minHeight="120px" maxHeight="200px">
+              <img
+                src={event.photo}
+                srcSet="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&fit=crop&w=286&dpr=2 2x"
+                loading="lazy"
+                alt=""
+              />
+            </AspectRatio>
+            <ExpandMore
+              id={event.id}
+              expand={expanded[event.id]}
+              onClick={() => handleExpandClick(event.id)}
+              aria-expanded={expanded[event.id]}
+              aria-label="show more"
             >
-              <div>
-                <Typography level="title-lg">{event.name}</Typography>
-                <Typography level="body-sm">{event.createdAt}</Typography>
+              <ExpandMoreIcon />
+            </ExpandMore>
+            <Collapse in={expanded[event.id]} timeout="auto" unmountOnExit>
+              <CardContent orientation="horizontal">
+                <div>
+                  <Typography level="title-lg">Descripción</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {event.description}
+                  </Typography>
+                  <Typography level="title-lg">Participantes</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                    Nulla, quaerat exercitationem quod architecto sapiente
+                    maiores tenetur quis vel debitis saepe voluptatibus quia
+                    sit atque quas neque, ut nisi quam totam!
+                  </Typography>
+                </div>
+              </CardContent>
+              {window.location.pathname === "/" ? (
+                <div>
+                  <Button
+                    variant="solid"
+                    size="md"
+                    color="primary"
+                    aria-label="Explore Bahamas Islands"
+                    sx={{
+                      ml: "auto",
+                      alignSelf: "center",
+                      fontWeight: 600,
+                      marginRight: "1rem",
+                      marginTop: "1rem",
+                      backgroundColor: "rgb(101, 101, 238)",
+                    }}
+                    onClick={() => handleActivity(event.id)}
+                  >
+                    Ver actividades
+                  </Button>
+                  <Button
+                    variant="solid"
+                    size="md"
+                    color="primary"
+                    sx={{
+                      ml: "auto",
+                      alignSelf: "center",
+                      fontWeight: 600,
+                      backgroundColor: "rgb(101, 101, 238)",
+                      marginTop: ".5rem",
+                    }}
+                    onClick={() => handleSendInvitation(event.id)}
+                  >
+                    Agregar participantes
+                  </Button>
+                </div>
+              ) : null}
+            </Collapse>
+          </Card>
+        ))
+        : (
+          <div className="cart-container">
+            <div className="cart-item">
+              <div className="cart-item-details center">
+                <h2>No hay eventos para mostrar, comienza creando uno</h2>
+                <div className="button-align">
+                  <Button
+                    variant="solid"
+                    size="md"
+                    color="primary"
+                    sx={{
+                      fontWeight: 100,
+                      backgroundColor: "rgb(101, 101, 238)",
+                    }}
+                    onClick={() => navigate("/create-event")}
+                  >
+                    Crear evento
+                  </Button>
+                </div>
               </div>
-              <AspectRatio minHeight="120px" maxHeight="200px">
-                <img
-                  src={event.photo}
-                  srcSet="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&fit=crop&w=286&dpr=2 2x"
-                  loading="lazy"
-                  alt=""
-                />
-              </AspectRatio>
-              <ExpandMore
-                id={event.id}
-                expand={expanded[event.id]}
-                onClick={() => handleExpandClick(event.id)}
-                aria-expanded={expanded[event.id]}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </ExpandMore>
-              <Collapse in={expanded[event.id]} timeout="auto" unmountOnExit>
-                <CardContent orientation="horizontal">
-                  <div>
-                    <Typography level="title-lg">Descripción</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {event.description}
-                    </Typography>
-                    <Typography level="title-lg">Participantes</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                      Nulla, quaerat exercitationem quod architecto sapiente
-                      maiores tenetur quis vel debitis saepe voluptatibus quia
-                      sit atque quas neque, ut nisi quam totam!
-                    </Typography>
-                  </div>
-                </CardContent>
-                {window.location.pathname === "/" ? (
-                  <div>
-                    <Button
-                      variant="solid"
-                      size="md"
-                      color="primary"
-                      aria-label="Explore Bahamas Islands"
-                      sx={{
-                        ml: "auto",
-                        alignSelf: "center",
-                        fontWeight: 600,
-                        marginRight: "1rem",
-                        marginTop: "1rem",
-                        backgroundColor: "rgb(101, 101, 238)",
-                      }}
-                      onClick={() => handleActivity(event.id)}
-                    >
-                      Ver actividades
-                    </Button>
-                    <Button
-                      variant="solid"
-                      size="md"
-                      color="primary"
-                      sx={{
-                        ml: "auto",
-                        alignSelf: "center",
-                        fontWeight: 600,
-                        backgroundColor: "rgb(101, 101, 238)",
-                      }}
-                      onClick={() => handleSendInvitation(event.id)}
-                    >
-                      Agregar participantes
-                    </Button>
-                  </div>
-                ) : null}
-              </Collapse>
-            </Card>
-          ))
-        : null}
+            </div>
+          </div>
+        )
+      }
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -272,26 +297,26 @@ export default function CardShow() {
             Invitar contactos
           </Typography>
           <div style={{ maxHeight: '30vh', overflowY: 'auto' }} className="scroll">
-          {contact.map((contact) => (
-            <ul key={contact.id}>
-              <li className="contactItems">
-                {contact.firstName + " " + contact.lastName}
-                <Button
-                  variant="solid"
-                  size="md"
-                  color="primary"
-                  aria-label="Explore Bahamas Islands"
-                  sx={{
-                    fontWeight: 600,
-                    backgroundColor: "rgb(101, 101, 238)",
-                  }}
-                  onClick={() => handleAddUserEvent(contact.id)}
-                >
-                  Invitar
-                </Button>
-              </li>
-            </ul>
-          ))}
+            {contact.map((contact) => (
+              <ul key={contact.id}>
+                <li className="contactItems">
+                  {contact.firstName + " " + contact.lastName}
+                  <Button
+                    variant="solid"
+                    size="md"
+                    color="primary"
+                    aria-label="Explore Bahamas Islands"
+                    sx={{
+                      fontWeight: 600,
+                      backgroundColor: "rgb(101, 101, 238)",
+                    }}
+                    onClick={() => handleAddUserEvent(contact.id)}
+                  >
+                    Invitar
+                  </Button>
+                </li>
+              </ul>
+            ))}
           </div>
         </Box>
       </Modal>

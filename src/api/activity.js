@@ -3,7 +3,7 @@ import axios from "axios";
 const local= "http://localhost:3000";
 const render = "https://x-event.onrender.com";
 
-const API = local;
+const API = render;
 
 export const getActivities = () => axios.get(`${API}/activity`);
 export const getActivity = (id) => axios.get(`${API}/activity/${id}`);

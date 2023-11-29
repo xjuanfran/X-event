@@ -1,6 +1,9 @@
-.containerShowEvent{
+.containerShowEvent {
   display: flex;
-  margin: 0 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
 }
 
 .titleContact{
@@ -39,4 +42,120 @@
       width: 100% !important;
       margin-bottom: 1rem;
   }
+}
+
+.cart-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.cart-container:hover {
+  cursor: pointer;
+  box-shadow: 15px 20px 20px 10px rgba(33, 33, 33, 0.276) !important;
+  transition: all 0.7s linear;
+}
+
+.cart-item {
+  background-color: rgba(33, 33, 33, 0.276);
+  display: flex;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding: 2rem;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.cart-item-image {
+  flex: 0 0 300px;
+  margin-right: 1rem;
+  display: flex;
+  justify-content: center; /* Centrar la imagen horizontalmente */
+  align-items: center; /* Centrar la imagen verticalmente */
+}
+
+.cart-item-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cart-item img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.cart-item h2 {
+  font-size: 1.4rem;
+  font-family: 'Lato', sans-serif;
+  color: #f0f0f0;
+  margin-bottom: 1rem;
+}
+
+.cart-item-details h5 {
+  margin-top: .8rem;
+  font-family: 'Lato', sans-serif;
+}
+
+.cart-item p {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.cart-item button{
+  border-radius: 12px;
+  font-family: 'Lato', sans-serif;
+}
+
+.cart-item-button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+@media (max-width: 445px) {
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-image {
+    margin-bottom: 1rem;
+  }
+
+  .cart-item-details {
+    order: -1;
+  }
+
+  .cart-item-button {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.center h2{
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center p{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center button{
+  width: 200px;
+  margin-bottom: 3rem;
+  font-family: 'Lato', sans-serif;
+}
+
+.button-align{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

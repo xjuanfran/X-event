@@ -69,7 +69,7 @@ const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true,
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/create-event");
+      navigate("/visitHome");
     }
   }, [isAuthenticated]);
 
