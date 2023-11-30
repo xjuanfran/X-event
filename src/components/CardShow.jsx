@@ -117,24 +117,11 @@ export default function CardShow() {
 
   const loadContacts = async () => {
     try {
-      const resContacts = await fetch("https://x-event.onrender.com/contact");
+      console.log(tokenInfo.sub);
+      //esperar a nico para get de userIF y contactId
+      const resContacts = await fetch(`https://x-event.onrender.com/contact/byUserId/1`);
       const dataContacts = await resContacts.json();
-
-      let contactIdArray = [];
-      dataContacts.forEach((contact) => {
-        contactIdArray.push(contact.contact);
-      });
-      console.log(contactIdArray);
-
-      const dataArray = [];
-
-      for (let contactId of contactIdArray) {
-        const resUser = await fetch(`https://x-event.onrender.com/user/${contactId}`);
-        const dataUser = await resUser.json();
-        dataArray.push(dataUser);
-      }
-
-      console.log(dataArray);
+      console.log(dataContacts);
       setContact(dataArray);
     } catch (error) {
       console.error("Error al cargar contactos:", error);
@@ -142,8 +129,8 @@ export default function CardShow() {
   };
 
   useEffect(() => {
-    loadContacts();
-  }, []);
+    if (tokenInfo)loadContacts();
+  }, [tokenInfo]);
 
   const handleAddUserEvent = async (contactId) => {
     console.log("contacto Id " + contactId);  
@@ -261,7 +248,16 @@ export default function CardShow() {
           <div className="cart-container">
             <div className="cart-item">
               <div className="cart-item-details center">
-                <h2>No hay eventos para mostrar, comienza creando uno</h2>
+                {
+                  window.location.pathname === "/activity" ? (
+                    <h2>No hay actividades para mostrar, comienza creando una</h2>
+                  ) : null
+                }
+                {
+                  window.location.pathname === "/" ? (
+                    <h2>No hay eventos para mostrar, comienza creando uno</h2>
+                  ) : null
+                }
                 <div className="button-align">
                   <Button
                     variant="solid"

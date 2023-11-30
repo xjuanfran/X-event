@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BiMenuAltRight } from "react-icons/bi";
+import { BiFontSize, BiMenuAltRight } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -126,7 +126,7 @@ function Navbar() {
     console.log(notifications);
     const newData = await Promise.all(
       notifications.map(async (item) => {
-       //console.log(item.userId);
+        //console.log(item.userId);
         const res = await fetch(
           `https://x-event.onrender.com/user/${item.userId}`
         );
@@ -140,19 +140,44 @@ function Navbar() {
   };
 
   useEffect(() => {
-    console.log(infoNotification);
     if (tokenInfo) contactNotification();
   }, [tokenInfo]);
 
   const handleAccept = async (userId) => {
     console.log("aceptando" + userId);
-    const res = await fetch(`https://x-event.onrender.com/contact/${userId}`)
-      const data = await res.json();
-      console.log(data);
+    console.log(tokenInfo.sub);
+    const res = await fetch(
+      `https://x-event.onrender.com/contact/byUserId/${userId}/contact/${tokenInfo.sub}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: "accepted" }),
+      }
+    );
+    const data = await res.json();
+    console.log(data);
+    const updatedNotifications = infoNotification.filter(
+      (item) => item.id !== userId
+    );
+    setInfoNotification(updatedNotifications);
   };
 
-  const handleReject = async (contactId) => {
-    console.log("rechazando" + contactId);
+  const handleReject = async (userId) => {
+    console.log("rechazando" + userId);
+    const res = await fetch(
+      `https://x-event.onrender.com/contact/byUserId/${userId}/contact/${tokenInfo.sub}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: "rejected" }),
+      }
+    );
+    const data = await res.json();
+    console.log(data);
+    const updatedNotifications = infoNotification.filter(
+      (item) => item.id !== userId
+    );
+    setInfoNotification(updatedNotifications);
   };
 
   return (
@@ -246,7 +271,7 @@ function Navbar() {
                           onClick={handleOpen}
                         >
                           <Badge badgeContent={1} color="secondary">
-                            <MailIcon />
+                            <i className="fa-solid fa-bell"></i>
                           </Badge>
                         </IconButton>
                       </li>
@@ -263,48 +288,64 @@ function Navbar() {
                             component="h2"
                             className="titleNotification"
                           >
-                            Notificaciones
+                            <i className="fa-solid fa-bell"></i>
+                            &nbsp; Notificaciones
                           </Typography>
                           <div
                             style={{ maxHeight: "30vh", overflowY: "auto" }}
                             className="scrollNotification"
                           >
-                            {infoNotification?.map((item, index) => (
-                              <ul key={index} className="notificationItems">
-                                <div>
-                                  <li>
-                                    {item.firstName + " " + item.lastName}
-                                  </li>
-                                </div>
-                                <div>
-                                  <Button
-                                    variant="solid"
-                                    size="md"
-                                    color="primary"
-                                    sx={{
-                                      fontWeight: 600,
-                                      backgroundColor: "rgb(101, 101, 238)",
-                                    }}
-                                    onClick={()=> handleAccept(item.id)}
-                                  >
-                                    Aceptar
-                                  </Button>
-                                  <Button
-                                    variant="solid"
-                                    size="md"
-                                    color="primary"
-                                    style={{ marginLeft: ".5rem" }}
-                                    sx={{
-                                      fontWeight: 600,
-                                      backgroundColor: "rgb(101, 101, 238)",
-                                    }}
-                                    onClick={()=> handleReject(item.id)}
-                                  >
-                                    Rechazar
-                                  </Button>
-                                </div>
-                              </ul>
-                            ))}
+                            {infoNotification && infoNotification.length > 0 ? (
+                              infoNotification.map((item, index) => (
+                                <ul key={index} className="notificationItems">
+                                  <div>
+                                    <li>
+                                      {item.firstName +
+                                        " " +
+                                        item.lastName +
+                                        " te quiere agregar como contacto"}
+                                    </li>
+                                  </div>
+                                  <div>
+                                    <Button
+                                      variant="solid"
+                                      size="md"
+                                      color="primary"
+                                      sx={{
+                                        fontWeight: 600,
+                                        backgroundColor: "rgb(101, 101, 238)",
+                                      }}
+                                      onClick={() => handleAccept(item.id)}
+                                    >
+                                      Aceptar
+                                    </Button>
+                                    <Button
+                                      variant="solid"
+                                      size="md"
+                                      color="primary"
+                                      style={{ marginLeft: ".5rem" }}
+                                      sx={{
+                                        fontWeight: 600,
+                                        backgroundColor: "rgb(101, 101, 238)",
+                                      }}
+                                      onClick={() => handleReject(item.id)}
+                                    >
+                                      Rechazar
+                                    </Button>
+                                  </div>
+                                </ul>
+                              ))
+                            ) : (
+                              <h1
+                                style={{
+                                  fontSize: "1rem",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                De momento sin Notificaciones
+                              </h1>
+                            )}
                           </div>
                         </Box>
                       </Modal>
