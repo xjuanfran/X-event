@@ -37,8 +37,9 @@ function Navbar() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
+    width: "80vw",
+    maxHeight: "80vh",
+    bgcolor: "#141514",
     color: "black",
     border: "2px solid #000",
     boxShadow: 24,
@@ -125,13 +126,13 @@ function Navbar() {
     console.log(notifications);
     const newData = await Promise.all(
       notifications.map(async (item) => {
-        console.log(item.userId);
+       //console.log(item.userId);
         const res = await fetch(
           `https://x-event.onrender.com/user/${item.userId}`
         );
         const data = await res.json();
         console.log(data);
-        return data; // Retorna el resultado de cada llamada a la API
+        return data;
       })
     );
     console.log(newData);
@@ -142,6 +143,17 @@ function Navbar() {
     console.log(infoNotification);
     if (tokenInfo) contactNotification();
   }, [tokenInfo]);
+
+  const handleAccept = async (userId) => {
+    console.log("aceptando" + userId);
+    const res = await fetch(`https://x-event.onrender.com/contact/${userId}`)
+      const data = await res.json();
+      console.log(data);
+  };
+
+  const handleReject = async (contactId) => {
+    console.log("rechazando" + contactId);
+  };
 
   return (
     <header className="header">
@@ -249,31 +261,51 @@ function Navbar() {
                             id="modal-modal-title"
                             variant="h6"
                             component="h2"
+                            className="titleNotification"
                           >
                             Notificaciones
                           </Typography>
-                          <Typography
-                            id="modal-modal-description"
-                            sx={{ mt: 2 }}
+                          <div
+                            style={{ maxHeight: "30vh", overflowY: "auto" }}
+                            className="scrollNotification"
                           >
-                            {infoNotification?.map((item) => (
-                              <ul key={item.id}>
-                                <li>item.firstName</li>
-                                <Button
-                                  variant="solid"
-                                  size="md"
-                                  color="primary"
-                                  aria-label="Explore Bahamas Islands"
-                                  sx={{
-                                    fontWeight: 600,
-                                    backgroundColor: "rgb(101, 101, 238)",
-                                  }}
-                                >
-                                  Invitar
-                                </Button>
+                            {infoNotification?.map((item, index) => (
+                              <ul key={index} className="notificationItems">
+                                <div>
+                                  <li>
+                                    {item.firstName + " " + item.lastName}
+                                  </li>
+                                </div>
+                                <div>
+                                  <Button
+                                    variant="solid"
+                                    size="md"
+                                    color="primary"
+                                    sx={{
+                                      fontWeight: 600,
+                                      backgroundColor: "rgb(101, 101, 238)",
+                                    }}
+                                    onClick={()=> handleAccept(item.id)}
+                                  >
+                                    Aceptar
+                                  </Button>
+                                  <Button
+                                    variant="solid"
+                                    size="md"
+                                    color="primary"
+                                    style={{ marginLeft: ".5rem" }}
+                                    sx={{
+                                      fontWeight: 600,
+                                      backgroundColor: "rgb(101, 101, 238)",
+                                    }}
+                                    onClick={()=> handleReject(item.id)}
+                                  >
+                                    Rechazar
+                                  </Button>
+                                </div>
                               </ul>
                             ))}
-                          </Typography>
+                          </div>
                         </Box>
                       </Modal>
                       <li>

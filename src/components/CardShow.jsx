@@ -182,6 +182,7 @@ export default function CardShow() {
           >
             <div>
               <Typography level="title-lg">{event.name}</Typography>
+              <Typography level="body-sm">Precio total del evento ${event.cost}</Typography>
               <Typography level="body-sm">{event.createdAt}</Typography>
             </div>
             <AspectRatio minHeight="120px" maxHeight="200px">
@@ -297,15 +298,14 @@ export default function CardShow() {
             Invitar contactos
           </Typography>
           <div style={{ maxHeight: '30vh', overflowY: 'auto' }} className="scroll">
-            {contact.map((contact) => (
-              <ul key={contact.id}>
+            {contact.map((contact, index) => (
+              <ul key={index}>
                 <li className="contactItems">
                   {contact.firstName + " " + contact.lastName}
                   <Button
                     variant="solid"
                     size="md"
                     color="primary"
-                    aria-label="Explore Bahamas Islands"
                     sx={{
                       fontWeight: 600,
                       backgroundColor: "rgb(101, 101, 238)",
