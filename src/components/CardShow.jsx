@@ -118,11 +118,37 @@ export default function CardShow() {
   const loadContacts = async () => {
     try {
       console.log(tokenInfo.sub);
-      //esperar a nico para get de userIF y contactId
-      const resContacts = await fetch(`https://x-event.onrender.com/contact/byUserId/1`);
+      const resContacts = await fetch(`https://x-event.onrender.com/contact/byUserId/${tokenInfo.sub}`);
       const dataContacts = await resContacts.json();
-      console.log(dataContacts);
-      setContact(dataArray);
+      console.log(dataContacts.response);
+      console.log(dataContacts.response2);
+      let contactIdArray  = [];
+      dataContacts.response.forEach((element) => {
+        contactIdArray .push(element);
+      });
+      dataContacts.response2.forEach((element) => {
+        contactIdArray .push(element);
+      });
+      console.log(contactIdArray);
+
+      const dataArray = [];
+
+      for(let contactId of contactIdArray){
+        //console.log(contactId.userId);
+        if(contactId.userId !== tokenInfo.sub){
+          const resContact = await fetch(`https://x-event.onrender.com/user/${contactId.userId}`);
+          const dataContact = await resContact.json();
+          console.log(dataContact);
+          dataArray.push(dataContact);
+        } else {
+          const resContact = await fetch(`https://x-event.onrender.com/user/${contactId.contact}`);
+          const dataContact = await resContact.json();
+          console.log(dataContact);
+          dataArray.push(dataContact);
+        }
+      }
+      console.log(dataArray);
+      setContact(dataArray);      
     } catch (error) {
       console.error("Error al cargar contactos:", error);
     }
@@ -148,6 +174,7 @@ export default function CardShow() {
       },
       body: JSON.stringify(bodyParticipant),
     });
+    console.log(res);
     const data = await res.json();
     console.log(data);
   };
