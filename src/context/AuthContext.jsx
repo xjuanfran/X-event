@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { registerRequest, loginRequest, reqCloudinary } from "../api/auth";
+import { getPersonNickName } from "../api/person";
 import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
@@ -14,6 +15,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [searchUser , setSearchUser] = useState(null);
   //Use for send error only the path "/register" and only one time
   const [errors, setErrors] = useState(null);
   const [errorsLogin, setErrorsLogin] = useState(null);
@@ -23,6 +25,17 @@ export const AuthProvider = ({ children }) => {
   const [resetErrors, setResetErrors] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const getPersonNick = async (nickName) => {
+    try {
+      console.log("buscando usuario...");
+      const response = await getPersonNickName(nickName);
+      //console.log(response.data[0]);
+      setSearchUser(response.data[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const signUp = async (user, img, defaultImage, cancelImg) => {
     try {
@@ -118,6 +131,8 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        getPersonNick,
+        searchUser,
         signUp,
         signIn,
         user,

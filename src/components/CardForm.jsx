@@ -223,7 +223,7 @@ const CardForm = ({ fields, showImage = true, showActivity = false, showComboBox
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="divCard">
       <div className="card-container">
         <div className="card-image">
           {imagePreview}

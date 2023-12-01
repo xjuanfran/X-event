@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import { createEventRequest, getEventCreator } from "../api/event";
+import { createEventRequest, getEventCreator, getEventParticipant } from "../api/event";
+import { getActivitiesByUser, getActivitiesByRegistration } from "../api/activity";
 import { reqCloudinary } from "../api/auth";
 
 export const EventContext = createContext();
@@ -15,12 +16,43 @@ export const UseEvent = () => {
 export const EventProvider = ({ children }) => {
   const [event, setEvent] = useState(null);
   const [eventUser , setEventUser] = useState(null);
+  const [activityUser, setActivityUser] = useState(null);
 
   const getEventByUserCreator = async (id) => {
     try {
       const response = await getEventCreator(id);
       setEventUser(response.data);
       //console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getEventbyUserParticipant = async (id) => {
+    try {
+      const response = await getEventParticipant(id);
+      setEventUser(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getActivityUser = async (id) => {
+    try {
+      const response = await getActivitiesByUser(id);
+      setActivityUser(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getActivityRegistration = async (id) => {
+    try {
+      const response = await getActivitiesByRegistration(id);
+      setActivityUser(response.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +101,11 @@ export const EventProvider = ({ children }) => {
         event,
         createEvent,
         getEventByUserCreator,
-        eventUser
+        eventUser,
+        getActivityUser,
+        activityUser,
+        getEventbyUserParticipant,
+        getActivityRegistration
       }}
     >
       {children}

@@ -19,20 +19,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/formComponent.css";
 
-const FormComponent = ({
-  fields,
-  style,
-  showPhotoInput = true,
-  showImage = true,
-  buttonName,
-  separationLogin = false,
-  separationRegister = false,
-}) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const FormComponent = ({ fields, style, showPhotoInput = true, showImage = true, buttonName, separationLogin = false, separationRegister = false}) => {
+  const { register, handleSubmit, formState: { errors },} = useForm();
   const {
     signUp,
     signIn,
@@ -81,7 +69,7 @@ const FormComponent = ({
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/create-event");
+      navigate("/visitHome");
     }
   }, [isAuthenticated]);
 
