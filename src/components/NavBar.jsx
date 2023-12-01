@@ -166,34 +166,31 @@ function Navbar() {
 
   const handleAcceptEvent = async (creator) => {
     console.log("aceptando evento " + creator);
-    const reqGetEvent = await fetch(
-      `https://x-event.onrender.com/event/byUser/${creator}`
-    );
+    const reqGetEvent = await fetch(`https://x-event.onrender.com/event/byUser/${creator}`);
     const dataEvent = await reqGetEvent.json();
     console.log(dataEvent);
+  
     for (let eventIds of dataEvent) {
       console.log(eventIds);
-      const reqGetParticipant = await fetch(
-        `https://x-event.onrender.com/participant/byEvent/${eventIds.id}`
-      );
-      console.log(reqGetParticipant.status);
-      if (reqGetParticipant.status === 500) {
-        console.log("No found participants in this event");
+  
+      try {
+        const reqGetParticipant = await fetch(`https://x-event.onrender.com/participant/acceptParticipantion/${tokenInfo.sub}/${eventIds.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state: "accepted" }),
+        });
+        const dataParticipant = await reqGetParticipant.json();
+        console.log(dataParticipant);
+        if(dataParticipant.id) break;
+        const updatedNotifications = notificationEvents.filter(
+          (item) => item.id !== creator
+        );
+        setNotificationEvents(updatedNotifications);
+      } catch (error) {
+        console.error("Error al aceptar el evento:", error);
       }
-      const dataParticipant = await reqGetParticipant.json();
-      console.log(dataParticipant);
     }
-
-    // const res = await fetch(`https://x-event.onrender.com/participant/acceptParticipantion/${tokenInfo.sub}/${eventId}`,
-    //   {
-    //     method: "PATCH",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ state: "accepted" }),
-    //   }
-    // );
-    // const data = await res.json();
-    // console.log(data);
-  };
+  };  
 
   const handleReject = async (userId) => {
     console.log("rechazando" + userId);
@@ -226,6 +223,7 @@ function Navbar() {
         arrayParticipants.push(item);
       }
     });
+    console.log(arrayParticipants)
     const eventIds = arrayParticipants.map((item) => item.eventId);
     setEventId(eventIds);
 
