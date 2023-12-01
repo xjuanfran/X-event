@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import Modal from "@mui/material/Modal";
 import { Box, Typography } from "@mui/material";
+import { get } from "react-hook-form";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -29,7 +30,7 @@ const ExpandMore = styled((props) => {
 export default function CardShow() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { getEventByUserCreator, eventUser, getActivityUser, activityUser } =
+  const { getEventByUserCreator, getEventbyUserParticipant, eventUser, getActivityUser, activityUser } =
     UseEvent();
   const [tokenInfo, setTokenInfo] = useState(null);
   const [listEvents, setListEvents] = useState([]);
@@ -77,8 +78,11 @@ export default function CardShow() {
 
   useEffect(() => {
     if (tokenInfo) {
-      if (window.location.pathname === "/")
+      if (window.location.pathname === "/"){
+        console.log("ey");
         getEventByUserCreator(tokenInfo.sub);
+        getEventbyUserParticipant(tokenInfo.sub);
+      }
       else getActivityUser(tokenInfo.sub);
     }
   }, [tokenInfo]);
