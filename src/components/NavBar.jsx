@@ -192,6 +192,34 @@ function Navbar() {
     }
   };  
 
+  const handleRejectEvent = async (creator) => {
+    console.log("aceptando evento " + creator);
+    const reqGetEvent = await fetch(`https://x-event.onrender.com/event/byUser/${creator}`);
+    const dataEvent = await reqGetEvent.json();
+    console.log(dataEvent);
+  
+    for (let eventIds of dataEvent) {
+      console.log(eventIds);
+  
+      try {
+        const reqGetParticipant = await fetch(`https://x-event.onrender.com/participant/acceptParticipantion/${tokenInfo.sub}/${eventIds.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state: "reject" }),
+        });
+        const dataParticipant = await reqGetParticipant.json();
+        console.log(dataParticipant);
+        if(dataParticipant.id) break;
+        const updatedNotifications = notificationEvents.filter(
+          (item) => item.id !== creator
+        );
+        setNotificationEvents(updatedNotifications);
+      } catch (error) {
+        console.error("Error al aceptar el evento:", error);
+      }
+    }
+  };  
+
   const handleReject = async (userId) => {
     console.log("rechazando" + userId);
     const res = await fetch(
