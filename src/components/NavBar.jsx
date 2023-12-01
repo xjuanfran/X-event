@@ -22,6 +22,7 @@ function Navbar() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [infoNotification, setInfoNotification] = useState(null);
+  const [ notificationEvents, setNotificationEvents ] = useState(null);
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpen = () => setOpenModal(true);
@@ -159,7 +160,7 @@ function Navbar() {
     const updatedNotifications = infoNotification.filter(
       (item) => item.id !== userId
     );
-    setInfoNotification(updatedNotifications);
+    setNotificationEvents(updatedNotifications);
   };
 
   const handleReject = async (userId) => {
@@ -179,6 +180,46 @@ function Navbar() {
     );
     setInfoNotification(updatedNotifications);
   };
+
+  const participantsNotification = async () => {
+    console.log("contactando al server");
+    const res = await fetch("https://x-event.onrender.com/participant/");
+    const data = await res.json();
+    console.log(data);
+
+    let arrayParticipants = [];
+    data.map(async (item) => {
+      if(item.userId === tokenInfo.sub && item.state === "pending") {
+        console.log(item);
+        arrayParticipants.push(item);
+      }
+    });
+    console.log(arrayParticipants);
+
+    let arrayCreatorInvitation = [];
+
+    for(let eventId of arrayParticipants) {
+      const res = await fetch(`https://x-event.onrender.com/event/${eventId.eventId}`);
+      const data = await res.json();
+      console.log(data);
+      arrayCreatorInvitation.push(data);
+    }
+    console.log(arrayCreatorInvitation);
+
+    let arrayCreator = [];
+    for(let creatorId of arrayCreatorInvitation) {
+      const res = await fetch(`https://x-event.onrender.com/user/${creatorId.creator}`);
+      const data = await res.json();
+      console.log(data);
+      arrayCreator.push(data);
+    }
+    console.log(arrayCreator);
+    setNotificationEvents(arrayCreator);  
+  };
+
+  useEffect(() => {
+   if(tokenInfo)participantsNotification();
+  }, [tokenInfo]);
 
   return (
     <header className="header">
@@ -304,6 +345,57 @@ function Navbar() {
                                         " " +
                                         item.lastName +
                                         " te quiere agregar como contacto"}
+                                    </li>
+                                  </div>
+                                  <div>
+                                    <Button
+                                      variant="solid"
+                                      size="md"
+                                      color="primary"
+                                      sx={{
+                                        fontWeight: 600,
+                                        backgroundColor: "rgb(101, 101, 238)",
+                                      }}
+                                      onClick={() => handleAccept(item.id)}
+                                    >
+                                      Aceptar
+                                    </Button>
+                                    <Button
+                                      variant="solid"
+                                      size="md"
+                                      color="primary"
+                                      style={{ marginLeft: ".5rem" }}
+                                      sx={{
+                                        fontWeight: 600,
+                                        backgroundColor: "rgb(101, 101, 238)",
+                                      }}
+                                      onClick={() => handleReject(item.id)}
+                                    >
+                                      Rechazar
+                                    </Button>
+                                  </div>
+                                </ul>
+                              ))
+                            ) : (
+                              <h1
+                                style={{
+                                  fontSize: "1rem",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                De momento sin Notificaciones
+                              </h1>
+                            )}
+                            {notificationEvents && notificationEvents.length > 0 ? (
+                              notificationEvents.map((item, index) => (
+                                <ul key={index} className="notificationItems">
+                                  <div>
+                                    <li>
+                                      {item.firstName +
+                                        " " +
+                                        item.lastName +
+                                        " Te invito a un evento"}
                                     </li>
                                   </div>
                                   <div>
