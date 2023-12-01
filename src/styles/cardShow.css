@@ -1,9 +1,10 @@
 .containerShowEvent {
-  display: flex;
+  display: -webkit-inline-box;
+  width: 100%;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin: 2rem;
+  margin: 2rem !important;
 }
 
 .titleContact{
@@ -35,11 +36,12 @@
 
 @media screen and (max-width: 750px) {
   .containerShowEvent{
-      display: block;
+      display: flex;
+      flex-direction: column;
       margin-bottom: 1rem;
   }
   .card {
-      width: 100% !important;
+      width: 80% !important;
       margin-bottom: 1rem;
   }
 }
@@ -155,6 +157,13 @@
 }
 
 .button-align{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.noEventContainer{
+  width: 95%;
   display: flex;
   justify-content: center;
   align-items: center;

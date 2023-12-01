@@ -272,7 +272,7 @@ export default function CardShow() {
           </Card>
         ))
         : (
-          <div className="cart-container">
+          <div className="noEventContainer">
             <div className="cart-item">
               <div className="cart-item-details center">
                 {

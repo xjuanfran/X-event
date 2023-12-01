@@ -35,7 +35,7 @@ export default function EventActivity() {
   const loadActivity = async () => {
     const path = window.location.pathname.split("/")[2];
     const response = await fetch(
-      `http://localhost:3000/activity/byEvent/${path}`
+      `https://x-event.onrender.com/activity/byEvent/${path}`
     );
     const data = await response.json();
     setDataEvent(data);
@@ -51,7 +51,7 @@ export default function EventActivity() {
     //console.log(creatorIds);
     for (const creatorId of creatorIds) {
       //console.log(creatorId);
-      const response = await fetch(`http://localhost:3000/user/${creatorId}`);
+      const response = await fetch(`https://x-event.onrender.com/user/${creatorId}`);
       const data = await response.json();
       setUserData(data);
       console.log(data);

@@ -12,7 +12,7 @@ import { jwtDecode } from "jwt-decode";
 import "../styles/navBar.scss";
 import { Badge, Box, IconButton } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 
 function Navbar() {
   const location = useLocation();
@@ -22,7 +22,8 @@ function Navbar() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [infoNotification, setInfoNotification] = useState(null);
-  const [ notificationEvents, setNotificationEvents ] = useState(null);
+  const [notificationEvents, setNotificationEvents] = useState(null);
+  const [eventIdentification, setEventId] = useState(null);
 
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpen = () => setOpenModal(true);
@@ -163,6 +164,37 @@ function Navbar() {
     setNotificationEvents(updatedNotifications);
   };
 
+  const handleAcceptEvent = async (creator) => {
+    console.log("aceptando evento " + creator);
+    const reqGetEvent = await fetch(
+      `https://x-event.onrender.com/event/byUser/${creator}`
+    );
+    const dataEvent = await reqGetEvent.json();
+    console.log(dataEvent);
+    for (let eventIds of dataEvent) {
+      console.log(eventIds);
+      const reqGetParticipant = await fetch(
+        `https://x-event.onrender.com/participant/byEvent/${eventIds.id}`
+      );
+      console.log(reqGetParticipant.status);
+      if (reqGetParticipant.status === 500) {
+        console.log("No found participants in this event");
+      }
+      const dataParticipant = await reqGetParticipant.json();
+      console.log(dataParticipant);
+    }
+
+    // const res = await fetch(`https://x-event.onrender.com/participant/acceptParticipantion/${tokenInfo.sub}/${eventId}`,
+    //   {
+    //     method: "PATCH",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ state: "accepted" }),
+    //   }
+    // );
+    // const data = await res.json();
+    // console.log(data);
+  };
+
   const handleReject = async (userId) => {
     console.log("rechazando" + userId);
     const res = await fetch(
@@ -189,17 +221,20 @@ function Navbar() {
 
     let arrayParticipants = [];
     data.map(async (item) => {
-      if(item.userId === tokenInfo.sub && item.state === "pending") {
+      if (item.userId === tokenInfo.sub && item.state === "pending") {
         console.log(item);
         arrayParticipants.push(item);
       }
     });
-    console.log(arrayParticipants);
+    const eventIds = arrayParticipants.map((item) => item.eventId);
+    setEventId(eventIds);
 
     let arrayCreatorInvitation = [];
 
-    for(let eventId of arrayParticipants) {
-      const res = await fetch(`https://x-event.onrender.com/event/${eventId.eventId}`);
+    for (let eventId of arrayParticipants) {
+      const res = await fetch(
+        `https://x-event.onrender.com/event/${eventId.eventId}`
+      );
       const data = await res.json();
       console.log(data);
       arrayCreatorInvitation.push(data);
@@ -207,18 +242,20 @@ function Navbar() {
     console.log(arrayCreatorInvitation);
 
     let arrayCreator = [];
-    for(let creatorId of arrayCreatorInvitation) {
-      const res = await fetch(`https://x-event.onrender.com/user/${creatorId.creator}`);
+    for (let creatorId of arrayCreatorInvitation) {
+      const res = await fetch(
+        `https://x-event.onrender.com/user/${creatorId.creator}`
+      );
       const data = await res.json();
       console.log(data);
       arrayCreator.push(data);
     }
     console.log(arrayCreator);
-    setNotificationEvents(arrayCreator);  
+    setNotificationEvents(arrayCreator);
   };
 
   useEffect(() => {
-   if(tokenInfo)participantsNotification();
+    if (tokenInfo) participantsNotification();
   }, [tokenInfo]);
 
   return (
@@ -387,57 +424,51 @@ function Navbar() {
                                 De momento sin Notificaciones
                               </h1>
                             )}
-                            {notificationEvents && notificationEvents.length > 0 ? (
-                              notificationEvents.map((item, index) => (
-                                <ul key={index} className="notificationItems">
-                                  <div>
-                                    <li>
-                                      {item.firstName +
-                                        " " +
-                                        item.lastName +
-                                        " Te invito a un evento"}
-                                    </li>
-                                  </div>
-                                  <div>
-                                    <Button
-                                      variant="solid"
-                                      size="md"
-                                      color="primary"
-                                      sx={{
-                                        fontWeight: 600,
-                                        backgroundColor: "rgb(101, 101, 238)",
-                                      }}
-                                      onClick={() => handleAccept(item.id)}
-                                    >
-                                      Aceptar
-                                    </Button>
-                                    <Button
-                                      variant="solid"
-                                      size="md"
-                                      color="primary"
-                                      style={{ marginLeft: ".5rem" }}
-                                      sx={{
-                                        fontWeight: 600,
-                                        backgroundColor: "rgb(101, 101, 238)",
-                                      }}
-                                      onClick={() => handleReject(item.id)}
-                                    >
-                                      Rechazar
-                                    </Button>
-                                  </div>
-                                </ul>
-                              ))
-                            ) : (
-                              <h1
-                                style={{
-                                  fontSize: "1rem",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                De momento sin Notificaciones
-                              </h1>
-                            )}
+                            {notificationEvents && notificationEvents.length > 0
+                              ? notificationEvents.map((item, index) => (
+                                  <ul key={index} className="notificationItems">
+                                    <div>
+                                      <li>
+                                        {item.firstName +
+                                          " " +
+                                          item.lastName +
+                                          " Te invito a un evento"}
+                                      </li>
+                                    </div>
+                                    <div>
+                                      <Button
+                                        variant="solid"
+                                        size="md"
+                                        color="primary"
+                                        sx={{
+                                          fontWeight: 600,
+                                          backgroundColor: "rgb(101, 101, 238)",
+                                        }}
+                                        onClick={() =>
+                                          handleAcceptEvent(item.id)
+                                        }
+                                      >
+                                        Aceptar
+                                      </Button>
+                                      <Button
+                                        variant="solid"
+                                        size="md"
+                                        color="primary"
+                                        style={{ marginLeft: ".5rem" }}
+                                        sx={{
+                                          fontWeight: 600,
+                                          backgroundColor: "rgb(101, 101, 238)",
+                                        }}
+                                        onClick={() =>
+                                          handleRejectEvent(item.id)
+                                        }
+                                      >
+                                        Rechazar
+                                      </Button>
+                                    </div>
+                                  </ul>
+                                ))
+                              : null}
                           </div>
                         </Box>
                       </Modal>
